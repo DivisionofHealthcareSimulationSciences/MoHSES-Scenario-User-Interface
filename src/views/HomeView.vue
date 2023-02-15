@@ -18,6 +18,33 @@
         ></v-select>
 
         <v-expansion-panels v-model="expanded">
+
+          <v-expansion-panel>
+          <v-expansion-panel-title>
+            Scenario Properties
+          </v-expansion-panel-title>
+          
+          <v-expansion-panel-text>
+            <v-text-field
+              v-model="scenario_props['name']"
+              label="Scenario Name"
+              required
+            ></v-text-field>
+          </v-expansion-panel-text>
+
+          <v-expansion-panel-text>
+            <v-combobox
+              v-model="scenario_props['authors']"
+              label="Authors"
+              required
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+          </v-expansion-panel-text>
+
+          </v-expansion-panel>
+
           <v-expansion-panel>
           <v-expansion-panel-title>
             Patient Properties
@@ -285,6 +312,18 @@
             Capabilities
           </v-expansion-panel-title>
           <v-expansion-panel-text>
+            <div v-for="(exp, index) in capability" :key="index">
+              <v-checkbox-btn v-model="exp.required" label="Required"></v-checkbox-btn>
+              <v-text-field v-model="exp.name" label="Capability Name"></v-text-field>
+              <v-text-field v-model="exp.data" label="Configuration Data"></v-text-field>
+              <v-text-field v-model="exp.propertyName" label="Property Name"></v-text-field>
+              <v-select v-model="exp.dataType" label="Data Type" :items="['string', 'number', 'boolean', 'option']"></v-select>
+              <v-file-input v-model="exp.value" label="Value"></v-file-input>
+              <v-btn @click="removeCapability(index)">Remove Capability</v-btn>
+              <br>
+              <br>
+            </div>
+            <v-btn @click="addCapability">Add Capability</v-btn>
           </v-expansion-panel-text>
           </v-expansion-panel>
 
@@ -326,6 +365,18 @@
       drawer: false,
       valid: true,
       expanded: [0],
+      capability: [
+        { required: [],
+          name: [],
+          data: [],
+          propertyName: [],
+          dataType: [],
+          value: [] },
+      ],
+      scenario_props: {
+        "name":[],
+        "authors":[]
+      },
       patient_props: {
         "type": [],
         "name": [],
@@ -374,8 +425,20 @@
         'Nurse'
       ],
     }),
-
     methods: {
+      addCapability() {
+        this.capability.push({
+          required: '',
+          name: '',
+          data: '',
+          propertyName: '',
+          dataType: '',
+          value: ''
+          });
+      },
+      removeCapability(index) {
+        this.capability.splice(index, 1);
+      },
       validate () {
         this.$refs.form.validate()
       },
@@ -415,6 +478,11 @@
               } else {
                 metadata.ele(key3, this.ed_props[key3])
               }
+            }
+            for (var item4 in this.capability) {
+              for (var key4 in this.capability[item4]) {
+                  metadata.ele(key4, this.capability[item4][key4])
+                }
             }
         var xmlString = xml.end({ pretty: true });
         const blob = new Blob([xmlString], {type:'text/xml'})
