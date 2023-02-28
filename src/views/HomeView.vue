@@ -2,7 +2,6 @@
 <v-main>
   <v-row class="justify-center">
       <v-col cols="12" sm="8" md="6">
-      <!-- v-if="type === 'Medical Doctor' || type === 'Paramedic'" -->
       <v-form
         ref="form"
         v-model="valid"
