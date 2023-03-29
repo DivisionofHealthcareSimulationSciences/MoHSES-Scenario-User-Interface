@@ -1,5 +1,340 @@
 <template>
-<v-main>
+<v-card>
+    <v-toolbar
+      color="primary"
+    >
+      <v-toolbar-title>Scenario Creation</v-toolbar-title>
+    </v-toolbar>
+    <div class="d-flex flex-row">
+      <v-tabs
+        v-model="tab"
+        direction="vertical"
+        color="primary"
+      >
+        <v-tab value="option-1">
+          <v-icon start>
+            mdi-form-textbox
+          </v-icon>
+          Scenario Properties
+        </v-tab>
+        <v-tab value="option-2">
+          <v-icon start>
+            mdi-account
+          </v-icon>
+          Patient Properties
+        </v-tab>
+        <v-tab value="option-3">
+          <v-icon start>
+            mdi-access-point
+          </v-icon>
+          Environment Properties
+        </v-tab>
+        <v-tab value="option-4">
+          <v-icon start>
+            mdi-list-status
+          </v-icon>
+          Educational Encounter Properties
+        </v-tab>
+        <v-tab value="option-5">
+          <v-icon start>
+            mdi-tools
+          </v-icon>
+          Capabilities
+        </v-tab>
+      </v-tabs>
+      <v-window v-model="tab">
+        <v-window-item value="option-1">
+          <v-card>
+              <v-form
+              ref="form"
+              v-model="valid"
+              lazy-validation
+            >
+              <v-select
+              v-model="patient_props['type']"
+              :items="types"
+              :rules="[v => !!v || 'Type is required']"
+              label="Instructor Type"
+              required
+            ></v-select>
+
+            <v-text-field
+              v-model="scenario_props['name']"
+              label="Scenario Name"
+              required
+            ></v-text-field>
+
+            <v-combobox
+              v-model="scenario_props['authors']"
+              label="Authors"
+              required
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+            </v-form>
+          </v-card>
+        </v-window-item>
+
+        <v-window-item value="option-2">
+          <v-card flat>
+            <v-card-text>
+              <v-form>
+                <v-text-field
+              v-model="patient_props['name']"
+              :rules="nameRules"
+              label="Name"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="patient_props['title']"
+              :rules="nameRules"
+              label="Title or Rank"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="patient_props['age']"
+              :rules="nameRules"
+              label="Age"
+              required
+            ></v-text-field>
+
+            <v-select
+              v-model="patient_props['gender']"
+              :items="genders"
+              :rules="[v => !!v || 'Gender is required']"
+              label="Gender"
+              required
+            ></v-select>
+
+            <v-text-field
+              v-model="patient_props['height']"
+              :rules="nameRules"
+              label="Height [cm]"
+              required
+              ></v-text-field>
+
+            <v-text-field
+              v-model="patient_props['weight']"
+              :rules="nameRules"
+              label="Weight [kg]"
+              required
+            ></v-text-field>
+            </v-form>
+              <p>
+                Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Nunc sed turpis.
+              </p>
+
+              <p>
+                Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In hac habitasse platea dictumst. Fusce ac felis sit amet ligula pharetra condimentum.
+              </p>
+
+              <p>
+                Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Nam commodo suscipit quam. In consectetuer turpis ut velit. Sed cursus turpis vitae tortor. Aliquam eu nunc.
+              </p>
+
+              <p>
+                Etiam ut purus mattis mauris sodales aliquam. Ut varius tincidunt libero. Aenean viverra rhoncus pede. Duis leo. Fusce fermentum odio nec arcu.
+              </p>
+
+              <p class="mb-0">
+                Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce commodo aliquam arcu. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi.
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+        <v-window-item value="option-3">
+          <v-card flat>
+            <v-card-text>
+              <v-textarea
+              v-model="environment_props['surrounding']"
+              label="Surrounding"
+            ></v-textarea>
+
+            <v-text-field
+              v-model="environment_props['altitude']"
+              :rules="nameRules"
+              label="Altitude or Elevation"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="environment_props['temperature']"
+              :rules="nameRules"
+              label="Temperature [C]"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="environment_props['pressure']"
+              :rules="nameRules"
+              label="Pressure [mmHg]"
+              required
+            ></v-text-field>
+ 
+            <v-text-field
+              v-model="environment_props['co2']"
+              :rules="nameRules"
+              label="Ambient CO2 [fraction]"
+              required
+            ></v-text-field>
+
+            <v-combobox
+              v-model="environment_props['sounds']"
+              label="Ambient Sounds"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
+            <v-combobox
+              v-model="environment_props['smells']"
+              label="Smells"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+              <p>
+                Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In dui magna, posuere eget, vestibulum et, tempor auctor, justo.
+              </p>
+
+              <p class="mb-0">
+                Cras sagittis. Phasellus nec sem in justo pellentesque facilisis. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam at tortor in tellus interdum sagittis.
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+
+        <v-window-item value="option-4">
+          <v-card flat>
+            <v-card-text>
+              <v-textarea
+              v-model="ed_props['instruction']"
+              label="Instructions"
+            ></v-textarea>
+
+            <v-textarea
+              v-model="ed_props['narrative']"
+              label="Narrative"
+            ></v-textarea>
+
+            <v-text-field
+              v-model="ed_props['learnerCount']"
+              label="Number of Learners"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="ed_props['role']"
+              label="Roles"
+            ></v-text-field>
+
+            <v-combobox
+              v-model="ed_props['setup_checklist']"
+              label="Setup Checklist"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
+            <v-combobox
+              v-model="ed_props['equipment']"
+              label="Equipment"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
+            <v-combobox
+              v-model="ed_props['supplies']"
+              label="Supplies"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
+            <v-text-field
+              v-model="ed_props['duration']"
+              label="Estimated Duration"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="ed_props['scenario_type']"
+              label="Scenario Type"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="ed_props['assessment_type']"
+              label="Assessment Type"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="ed_props['learner_group']"
+              label="Learner Group"
+            ></v-text-field>
+
+            <v-combobox
+              v-model="ed_props['objectives']"
+              label="Learning Objectives"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
+            <v-combobox
+              v-model="ed_props['task']"
+              label="Task Descriptions"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
+            <v-combobox
+              v-model="ed_props['conditions']"
+              label="Performance Conditions"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
+            <v-combobox
+              v-model="ed_props['exit_criteria']"
+              label="Exit Criteria"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+              <p>
+                Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In dui magna, posuere eget, vestibulum et, tempor auctor, justo.
+              </p>
+
+              <p class="mb-0">
+                Cras sagittis. Phasellus nec sem in justo pellentesque facilisis. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam at tortor in tellus interdum sagittis.
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+
+        <v-window-item value="option-5">
+          <div v-for="(exp, index) in capability" :key="index">
+              <v-checkbox-btn v-model="exp.required" label="Required"></v-checkbox-btn>
+              <v-text-field v-model="exp.name" label="Capability Name"></v-text-field>
+              <v-text-field v-model="exp.data" label="Configuration Data"></v-text-field>
+              <v-text-field v-model="exp.propertyName" label="Property Name"></v-text-field>
+              <v-select v-model="exp.dataType" label="Data Type" :items="['string', 'number', 'boolean', 'option']"></v-select>
+              <v-file-input v-model="exp.value" label="Value"></v-file-input>
+              <v-btn @click="removeCapability(index)">Remove Capability</v-btn>
+              <br>
+              <br>
+            </div>
+            <v-btn @click="addCapability">Add Capability</v-btn>
+        </v-window-item>
+      </v-window>
+    </div>
+  </v-card>
+  
+  <v-main>
   <v-row class="justify-center">
       <v-col cols="12" sm="8" md="6">
       <v-form
@@ -7,14 +342,6 @@
         v-model="valid"
         lazy-validation
       >
-        
-        <v-select
-          v-model="patient_props['type']"
-          :items="types"
-          :rules="[v => !!v || 'Type is required']"
-          label="Instructor Type"
-          required
-        ></v-select>
 
         <v-expansion-panels v-model="expanded">
 
@@ -357,10 +684,10 @@
 </template>
 
 <script>
-  import xmlbuilder from 'xmlbuilder'
-
+import xmlbuilder from 'xmlbuilder'
   export default {
     data: () => ({
+      tab: 'option-1',
       drawer: false,
       valid: true,
       expanded: [0],
