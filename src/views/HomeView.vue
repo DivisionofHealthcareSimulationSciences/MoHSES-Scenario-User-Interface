@@ -141,8 +141,8 @@
               v-model="patient_props['age']"
               label="Age"
               class="align-center"
-              :max="max"
-              :min="min"
+              :max="age_max"
+              :min="age_min"
               :step="1"
             >
               <template v-slot:append>
@@ -518,8 +518,8 @@
 import xmlbuilder from 'xmlbuilder'
   export default {
     data: () => ({
-      min: 0,
-      max: 300,
+      age_min: 0,
+      age_max: 120,
       height_min: 0,
       height_max: 200,
       weight_min: 0,
