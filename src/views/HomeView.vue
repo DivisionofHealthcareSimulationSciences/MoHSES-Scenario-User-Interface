@@ -408,7 +408,7 @@
         </v-row>
         <br>
         </v-window-item>
-
+        
         <v-window-item value="option-5" :transition="false" :reverse-transition="false">
           <div v-for="(exp, index) in capability" :key="index">
               <v-checkbox-btn v-model="exp.required" label="Required"></v-checkbox-btn>
@@ -436,8 +436,8 @@
 
         <v-window-item value="option-6" :transition="false" :reverse-transition="false">
           <v-main>
-  <v-row class="justify-center">
-  <v-col cols="12" sm="8" md="6" class="my-content">
+      <v-row>
+      <v-col>
     <svg
    width="550px"
    height="600px"
@@ -473,20 +473,28 @@
      id="Back"
      d="m 41.650534,18.217913 0.063,-2.62462 -0.71441,1.15181 -4.37994,1.49796 4.97857,8.36746 1.83043,5.08188 -0.21949,-13.55362 z m -7.42423,1.95717 -1.57473,1.56517 -0.81404,2.06905 -0.38603,2.52859 1.83679,-1.23927 2.76223,-1.15538 1.84691,3.4342 1.13679,5.49715 0.0767,5.8593 4.07066,1.10938 -0.10355,-7.94098 -1.94107,-4.90022 -5.04395,-8.19334 z m 13.23814,-1.85796 -0.063,-2.62463 0.71441,1.15181 4.37994,1.49796 -4.97857,8.36746 -1.83043,5.08189 0.21949,-13.55362 z m 7.42423,1.95716 1.57473,1.56518 0.81404,2.06904 0.0384,2.52859 -1.48921,-1.23926 -2.76223,-1.15539 -1.84691,3.4342 -1.13679,5.49715 -0.0767,5.8593 -4.07066,1.10938 0.10355,-7.94098 1.94107,-4.90021 5.04395,-8.19335 z m -11.12961,-1.89714 0.53876,25.33066 0.48967,-0.0297 0.65658,-25.3387 -0.28147,-0.84188 -1.25059,-4.9e-4 z m 0.08474,22.52102 0.14418,2.97292 1.15984,-0.0241 0.048,-2.96488 2.80867,-0.81981 2.34029,-0.7541 1.34121,3.73319 -4.77886,1.36455 -2.33301,1.2158 -2.37536,-1.2333 -5.45663,-1.37716 1.51961,-3.95743 z" />
 </svg>
+</v-col>
   <!-- <div v-if="showTextBox"> -->
+  
+  <v-col>
   <v-form
     ref="form"
     v-model="valid"
     lazy-validation
   >
-  <div>
+
     <!-- <v-text-field :label="name[name.length -1]" placeholder="Enter your condition here"></v-text-field> -->
     <v-text-field v-for="(item, index) in name"
       :key="index"
       :label="Object.keys(item)[0]"
       v-model="item[Object.keys(item)[0]]" 
       placeholder="Enter your condition here"/>
-  </div>
+
+  </v-form>
+  </v-col>
+</v-row> 
+<v-row class="justify-center">
+  <v-form>
   <v-col cols="auto">
     <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-left"></v-btn>
   </v-col>
@@ -503,10 +511,12 @@
     @click="reset"
   >
   Reset Form
+
   </v-btn>
+
   </v-form>
-  </v-col>
   </v-row>
+  <br>
   </v-main>
         </v-window-item>
       </v-window>
