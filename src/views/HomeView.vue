@@ -11,7 +11,12 @@
         direction="vertical"
         color="primary"
       >
-      
+        <v-tab value="home">
+          <v-icon start>
+            mdi-home
+          </v-icon>
+          About this page
+        </v-tab>
         <v-tab value="option-1">
           <v-icon start>
             mdi-form-textbox
@@ -46,7 +51,7 @@
           <v-icon start>
             mdi-account-alert
           </v-icon>
-          Injuries
+          Head-to-toe
         </v-tab>
         
       </v-tabs>
@@ -54,6 +59,12 @@
     <v-col cols="8" class="my-content">
       <v-window v-model="tab">
           <v-main>
+        <v-window-item value="home" :transition="false" :reverse-transition="false">
+          <p>This is the home page.</p>
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
+          </v-col>
+        </v-window-item>
         <v-window-item value="option-1" :transition="false" :reverse-transition="false">
           <v-card>
             <v-card-text>
@@ -87,6 +98,17 @@
 
             </v-card-text>
           </v-card>
+          <br>
+          <v-row justify="center">
+          <v-col cols="auto">
+            <v-btn @click="nextTab('home')" density="compact" icon="mdi-arrow-left"></v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-right"></v-btn>
+          </v-col>
+        </v-row>
+        <br>
+
         </v-window-item>
         </v-main>
 
@@ -107,36 +129,107 @@
               required
             ></v-text-field>
 
-            <v-text-field
-              v-model="patient_props['age']"
-              :rules="nameRules"
-              label="Age"
-              required
-            ></v-text-field>
-
             <v-select
               v-model="patient_props['gender']"
               :items="genders"
-              :rules="[v => !!v || 'Gender is required']"
-              label="Gender"
+              :rules="[v => !!v || 'Sex is required']"
+              label="Sex"
               required
             ></v-select>
 
-            <v-text-field
+            <v-slider
+              v-model="patient_props['age']"
+              label="Age"
+              class="align-center"
+              :max="age_max"
+              :min="age_min"
+              :step="1"
+            >
+              <template v-slot:append>
+                <v-text-field
+                  v-model="patient_props['age']"
+                  hide-details
+                  single-line
+                  density="compact"
+                  type="number"
+                  style="width: 90px"
+                ></v-text-field>
+              </template>
+            </v-slider>
+            
+            <v-slider
               v-model="patient_props['height']"
-              :rules="nameRules"
               label="Height [cm]"
-              required
-              ></v-text-field>
+              class="align-center"
+              :max="height_max"
+              :min="height_min"
+              :step="0.1"
+            >
+              <template v-slot:append>
+                <v-text-field
+                  v-model="patient_props['height']"
+                  hide-details
+                  single-line
+                  density="compact"
+                  type="number"
+                  style="width: 90px"
+                ></v-text-field>
+              </template>
+            </v-slider>
 
-            <v-text-field
+            <v-slider
               v-model="patient_props['weight']"
-              :rules="nameRules"
               label="Weight [kg]"
+              class="align-center"
+              :max="weight_max"
+              :min="weight_min"
+              :step="0.1"
+            >
+              <template v-slot:append>
+                <v-text-field
+                  v-model="patient_props['weight']"
+                  hide-details
+                  single-line
+                  density="compact"
+                  type="number"
+                  style="width: 90px"
+                ></v-text-field>
+              </template>
+            </v-slider>
+
+            <v-combobox
+              v-model="patient_props['meds']"
+              :rules="nameRules"
+              :items="med_options"
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+              label="Meds"
               required
-            ></v-text-field>
+            ></v-combobox>
+
+            <v-combobox
+              v-model="patient_props['history']"
+              :rules="nameRules"
+              label="Medical History"
+              required
+              multiple
+              chips
+              hint='Click "enter" to add multiple items'
+            ></v-combobox>
+
             </v-card-text> 
           </v-card>
+          <br>
+          <v-row justify="center">
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-left"></v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-3')" density="compact" icon="mdi-arrow-right"></v-btn>
+          </v-col>
+        </v-row>
+        <br>
         </v-window-item>
         <v-window-item value="option-3" :transition="false" :reverse-transition="false">
           <v-card flat>
@@ -191,6 +284,16 @@
             ></v-combobox>
             </v-card-text>
           </v-card>
+          <br>
+          <v-row justify="center">
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-left"></v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-4')" density="compact" icon="mdi-arrow-right"></v-btn>
+          </v-col>
+        </v-row>
+        <br>
         </v-window-item>
 
         <v-window-item value="option-4" :transition="false" :reverse-transition="false">
@@ -294,6 +397,16 @@
 
             </v-card-text>
           </v-card>
+          <br>
+          <v-row justify="center">
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-3')" density="compact" icon="mdi-arrow-left"></v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-right"></v-btn>
+          </v-col>
+        </v-row>
+        <br>
         </v-window-item>
 
         <v-window-item value="option-5" :transition="false" :reverse-transition="false">
@@ -309,6 +422,16 @@
               <br>
             </div>
             <v-btn @click="addCapability">Add Capability</v-btn>
+            <br>
+          <v-row justify="center">
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-4')" density="compact" icon="mdi-arrow-left"></v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn @click="nextTab('option-6')" density="compact" icon="mdi-arrow-right"></v-btn>
+          </v-col>
+        </v-row>
+        <br>
         </v-window-item>
 
         <v-window-item value="option-6" :transition="false" :reverse-transition="false">
@@ -364,6 +487,9 @@
       v-model="item[Object.keys(item)[0]]" 
       placeholder="Enter your condition here"/>
   </div>
+  <v-col cols="auto">
+    <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-left"></v-btn>
+  </v-col>
   <v-btn
     :disabled="!valid"
     color="success"
@@ -392,7 +518,14 @@
 import xmlbuilder from 'xmlbuilder'
   export default {
     data: () => ({
-      tab: 'option-1',
+      age_min: 0,
+      age_max: 120,
+      height_min: 0,
+      height_max: 200,
+      weight_min: 0,
+      weight_max: 200,
+      med_options: ['A', 'B', 'C'],
+      tab: 'home',
       name: [],
       drawer: false,
       valid: true,
@@ -413,10 +546,12 @@ import xmlbuilder from 'xmlbuilder'
         "type": [],
         "name": [],
         "title": [],
-        "age": [],
+        "age": 50,
         "gender": [],
-        "height": [],
-        "weight": [],
+        "height": 150,
+        "weight": 75,
+        "meds": [],
+        "history": []
       },
       environment_props: {
         "surrounding": [],
@@ -467,6 +602,9 @@ import xmlbuilder from 'xmlbuilder'
           dataType: '',
           value: ''
           });
+      },
+      nextTab(id){
+        this.tab = id;
       },
       removeCapability(index) {
         this.capability.splice(index, 1);
