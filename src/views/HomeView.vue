@@ -53,14 +53,16 @@
           </v-icon>
           Head-to-toe
         </v-tab>
-        
+        x
       </v-tabs>
     </v-col>
     <v-col cols="8" class="my-content">
       <v-window v-model="tab">
           <v-main>
         <v-window-item value="home" :transition="false" :reverse-transition="false">
-          <p>This is the home page.</p>
+          <p>This is the home page.
+            This tool will facilitate the creation of a BioGears scenario file will process key information regarding the patient such as physical attributes, vitals, 
+          </p>
           <v-col cols="auto">
             <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
           </v-col>

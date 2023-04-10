@@ -19,7 +19,7 @@
       temporary
     >
       <v-list nav>
-        <v-list-item title="Home" to="/"></v-list-item>
+        <v-list-item title="BioGears Scenario Tool" to="/"></v-list-item>
         <v-list-item title="About" to="/about"></v-list-item>
       </v-list>
     </v-navigation-drawer>
