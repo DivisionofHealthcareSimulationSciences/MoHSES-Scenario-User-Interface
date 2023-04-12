@@ -337,9 +337,11 @@
               }
             }
           }
+          const caps = Scenario.ele('capabilities')
           for (var item4 in this.capability) {
+            const cap = caps.ele('capability')
             for (var key4 in this.capability[item4]) {
-              metadata.ele(key4, this.capability[item4][key4])
+              cap.ele(key4, this.capability[item4][key4])
             }
           }
           var xmlString = xml.end({
