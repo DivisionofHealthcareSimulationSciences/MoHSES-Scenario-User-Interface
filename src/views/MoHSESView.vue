@@ -286,14 +286,25 @@
             encoding: 'UTF-8'
           })
           xml.att({'xmlns:xsd':'http://www.w3.org/2001/XMLSchema', 'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance'})
-          const metadata = xml.ele('metadata')
+          const Scenario = xml.ele('Scenario')
+          Scenario.att({'name':this.scenario_props['name']})
+          const metadata = Scenario.ele('metadata')
           for (var key1 in this.patient_props) {
             if (Array.isArray(this.patient_props[key1])) {
               for (var item1 in this.patient_props[key1]) {
                 metadata.ele(key1, this.patient_props[key1][item1])
               }
             } else {
-              metadata.ele(key1, this.patient_props[key1])
+              const element = metadata.ele(key1, this.patient_props[key1])
+              if (key1 == 'age') {
+                element.att('units', 'years')
+              }
+              if (key1 == 'height') {
+                element.att('units', 'centimeters')
+              }
+              if (key1 == 'weight') {
+                element.att('units', 'kilograms')
+              }
             }
           }
           for (var key2 in this.environment_props) {
@@ -302,7 +313,16 @@
                 metadata.ele(key2, this.environment_props[key2][item2])
               }
             } else {
-              metadata.ele(key2, this.environment_props[key2])
+              const element = metadata.ele(key2, this.environment_props[key2])
+              if (key2 == 'altitude') {
+                element.att('units', 'meters')
+              }
+              if (key2 == 'temperature') {
+                element.att('units', 'celsius')
+              }
+              if (key2 == 'pressure') {
+                element.att('units', 'mmHg')
+              }
             }
           }
           for (var key3 in this.ed_props) {
@@ -311,12 +331,17 @@
                 metadata.ele(key3, this.ed_props[key3][item3])
               }
             } else {
-              metadata.ele(key3, this.ed_props[key3])
+              const element = metadata.ele(key3, this.ed_props[key3])
+              if (key3 == 'duration') {
+                element.att('units', 'minutes')
+              }
             }
           }
+          const caps = Scenario.ele('capabilities')
           for (var item4 in this.capability) {
+            const cap = caps.ele('capability')
             for (var key4 in this.capability[item4]) {
-              metadata.ele(key4, this.capability[item4][key4])
+              cap.ele(key4, this.capability[item4][key4])
             }
           }
           var xmlString = xml.end({
