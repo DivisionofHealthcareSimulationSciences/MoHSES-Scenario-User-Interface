@@ -52,21 +52,14 @@
         <v-card flat>
               <v-card-text>
                 <v-text-field
-              v-model="patient_props['name']"
+              v-model="patient_props['Name']"
               :rules="nameRules"
               label="Name"
               required
             ></v-text-field>
 
-            <v-text-field
-              v-model="patient_props['title']"
-              :rules="nameRules"
-              label="Title or Rank"
-              required
-            ></v-text-field>
-
             <v-select
-              v-model="patient_props['gender']"
+              v-model="patient_props['Sex']"
               :items="genders"
               :rules="[v => !!v || 'Sex is required']"
               label="Sex"
@@ -94,6 +87,26 @@
             </v-slider>
             
             <v-slider
+              v-model="patient_props['weight']"
+              label="Weight [kg]"
+              class="align-center"
+              :max="weight_max"
+              :min="weight_min"
+              :step="0.1"
+            >
+              <template v-slot:append>
+                <v-text-field
+                  v-model="patient_props['weight']"
+                  hide-details
+                  single-line
+                  density="compact"
+                  type="number"
+                  style="width: 90px"
+                ></v-text-field>
+              </template>
+            </v-slider>
+
+            <v-slider
               v-model="patient_props['height']"
               label="Height [cm]"
               class="align-center"
@@ -113,25 +126,6 @@
               </template>
             </v-slider>
 
-            <v-slider
-              v-model="patient_props['weight']"
-              label="Weight [kg]"
-              class="align-center"
-              :max="weight_max"
-              :min="weight_min"
-              :step="0.1"
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="patient_props['weight']"
-                  hide-details
-                  single-line
-                  density="compact"
-                  type="number"
-                  style="width: 90px"
-                ></v-text-field>
-              </template>
-            </v-slider>
             </v-card-text>
             </v-card>
             <br>
@@ -155,29 +149,35 @@
                 <br>
 
                 <v-select
-                  v-model="patient_vitals['blood_type']"
+                  v-model="patient_vitals['BloodTypeABO']"
                   :items="blood_types"
                   label="Blood Type"
                 ></v-select>
 
+                <v-select
+                  v-model="patient_vitals['BloodTypeRh']"
+                  :items="rh"
+                  label="Rh"
+                ></v-select>
+<!-- 
                 <v-text-field
                   v-model="patient_vitals['mean_arterial_pressure']"
                   label="Mean Arterial Pressure (mmHg)"
-                ></v-text-field>
+                ></v-text-field> -->
 
                 <v-text-field
-                  v-model="patient_vitals['systolic_arterial_pressure']"
+                  v-model="patient_vitals['SystolicArterialPressureBaseline']"
                   label="Systolic Arterial Pressure (mmHg)"
                   required
                 ></v-text-field>
                 
                 <v-text-field
-                  v-model="patient_vitals['diastolic_arterial_pressure']"
+                  v-model="patient_vitals['DiastolicArterialPressureBaseline']"
                   label="Diastolic Arterial Pressure (mmHg)"
                   required
                 ></v-text-field>
 
-                <v-text-field
+                <!-- <v-text-field
                   v-model="patient_vitals['cardiac_output']"
                   label="Cardiac Output (L/min)"
                 ></v-text-field>
@@ -195,9 +195,9 @@
                 <v-text-field
                 v-model="patient_vitals['oxy_saturation']"
                   label="Oxygen Saturation"
-                ></v-text-field>
+                ></v-text-field> -->
                 
-                <v-slider
+                <!-- <v-slider
                   v-model="patient_vitals['core_temperature']"
                   label="Core Temperature (degC)"
                   class="align-center"
@@ -214,10 +214,10 @@
                       style="width: 90px"
                     ></v-text-field>
                   </template>
-                </v-slider>
+                </v-slider> -->
 
                 <v-slider
-                  v-model="patient_vitals['heart_rate']"
+                  v-model="patient_vitals['HeartRateBaseline']"
                   label="Heart Rate (bpm)"
                   class="align-center"
                   :max="heart_rate_max"
@@ -225,7 +225,7 @@
                   :step="1"
                 ><template v-slot:append>
                     <v-text-field
-                      v-model="patient_vitals['heart_rate']"
+                      v-model="patient_vitals['HeartRateBaseline']"
                       hide-details
                       single-line
                       density="compact"
@@ -236,7 +236,7 @@
                 </v-slider>
 
                 <v-slider
-                  v-model="patient_vitals['resp_rate']"
+                  v-model="patient_vitals['RespirationRateBaseline']"
                   label="Respiratory Rate (1/min)"
                   class="align-center"
                   :max="resp_rate_max"
@@ -245,7 +245,7 @@
                 >
                   <template v-slot:append>
                     <v-text-field
-                      v-model="patient_vitals['resp_rate']"
+                      v-model="patient_vitals['RespirationRateBaseline']"
                       hide-details
                       single-line
                       density="compact"
@@ -277,6 +277,7 @@
               :disabled="!valid"
               color="success"
               class="mr-4"
+              @click="saveXML()"
             >
               Submit
               </v-btn>
@@ -376,7 +377,7 @@
 </template>
 
 <script>
-// import xmlbuilder from 'xmlbuilder'
+import xmlbuilder from 'xmlbuilder'
   export default {
     data: () => ({
       age_min: 0,
@@ -407,81 +408,149 @@
       ],
 
       patient_props: {
-        "type": [],
-        "name": [],
-        "title": [],
+        "Name": [],
+        "Sex": [],
         "age": 50,
-        "gender": [],
-        "height": 150,
         "weight": 75,
-        "meds": [],
-        "history": []
+        "height": 150
       },
       patient_vitals: {
-        "diastolic_arterial_pressure": [],
-        "central_venous_pressure": [],
-        "systolic_arterial_pressure":[],
-        "mean_arterial_pressure": [],
-        "heart_rate": 60,
-        "resp_rate": 14,
-        "cardiac_output": [],
-        "core_temperature": 37.5,
+        "BloodTypeABO": [],
+        "BloodTypeRh": [],
+        "DiastolicArterialPressureBaseline": [],
+        "SystolicArterialPressureBaseline":[],
+        "HeartRateBaseline": 60,
+        "RespirationRateBaseline": 14
       },
       genders: [
         'Male',
         'Female'
       ],
       blood_types: [
-        'A+',
-        'B+',
-        'AB+',
-        'A-',
-        'B-',
-        'AB-',
-        'O+',
-        'O-'
+        'A',
+        'B',
+        'AB',
+        'O'
+      ],
+      rh: [
+        'Positive',
+        'Negative'
       ]
     }),
     methods: {
-      nextTab(id){
-        this.tab = id;
-      },
-      removeCapability(index) {
-        this.capability.splice(index, 1);
-      },
-      validate () {
-        this.$refs.form.validate()
-      },
-      // reset () {
-      //   this.$refs.form.reset()
-      // },
-      reset () {
-        // Select all SVG path elements on the page
-        let paths = document.querySelectorAll("svg path");
-        // Loop through each path element and remove the "active" class
-        paths.forEach(path => {
-          if (path.classList.contains("active")) {
-            path.classList.remove("active");
+        nextTab(id) {
+          this.tab = id;
+        },
+        removeCapability(index) {
+          this.capability.splice(index, 1);
+        },
+        validate() {
+          this.$refs.form.validate()
+        },
+        reset() {
+          this.$refs.form.reset()
+        },
+        pathClicked(id) {
+          let pathElement = document.getElementById(id);
+          if (this.name.some(x => Object.keys(x).includes(id))) {
+            this.name = this.name.filter(x => !Object.keys(x).includes(id));
+          } else {
+            this.name.push({
+              [id]: ''
+            })
           }
-        });
-        this.name = []
-      },
-      pathClicked(id) {
-        let pathElement = document.getElementById(id);
-        if (this.name.some(x => Object.keys(x).includes(id))) {
-          this.name = this.name.filter(x => !Object.keys(x).includes(id));
-        } else {
-          this.name.push({[id]: ''})
-        }
-        if (pathElement.classList.contains("active")) {
-          pathElement.classList.remove("active");
-        } else {
-          pathElement.classList.add("active");
-        }
-      },
+          if (pathElement.classList.contains("active")) {
+            pathElement.classList.remove("active");
+          } else {
+            pathElement.classList.add("active");
+          }
+        },
+        saveXML() {
+          const xml = xmlbuilder.create('Patient', {
+            encoding: 'UTF-8',
+            standalone: "yes"
+          })
+          xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel", 'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+        'contentVersion':"BioGears_7.5"})
+         //const Patient = xml.ele('Patient')
+         // Patient.att({'name':this.patient_props['name']})
+          for (var key1 in this.patient_props) {
+              if (key1 == 'age') {
+                const Age = xml.ele('Age')
+                Age.att('value', this.patient_props[key1])
+                Age.att('units', 'yr')
+              }
+              else if (key1 == 'height') {
+                const Height = xml.ele('Height')
+                Height.att('value', this.patient_props[key1])
+                Height.att('units', '')
+              }
+              else if (key1 == 'weight') {
+                const Weight = xml.ele('Weight')
+                Weight.att('value', this.patient_props[key1])
+                Weight.att('units', 'kg')
+              }
+              else {
+                xml.ele(key1, this.patient_props[key1])
+              }
+            }
+        
+            for (var key2 in this.patient_vitals) {
+              if (key2 == 'BloodTypeRh') {
+                if (this.patient_vitals[key2] == 'Positive') {
+                  xml.ele(key2, 'true')
+                }
+                else if (this.patient_vitals[key2] == 'Negative') {
+                  xml.ele(key2, 'false')
+                }
+              }
+              else if (key2 == 'DiastolicArterialPressureBaseline') {
+                const DiastolicArterialPressureBaseline = xml.ele('DiastolicArterialPressureBaseline')
+                DiastolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
+                DiastolicArterialPressureBaseline.att('units', 'mmHg')
+              }
+              else if (key2 == 'SystolicArterialPressureBaseline') {
+                const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
+                SystolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
+                SystolicArterialPressureBaseline.att('units', 'mmHg')
+              }
+              else if (key2 == 'HeartRateBaseline') {
+                const HeartRate = xml.ele('HeartRateBaseline')
+                HeartRate.att('value', this.patient_vitals[key2])
+                HeartRate.att('units', '1/min')
+              }
+              else if (key2 == 'RespirationRateBaseline') {
+                const RespRate = xml.ele('RespirationRateBaseline')
+                RespRate.att('value', this.patient_vitals[key2])
+                RespRate.att('units', '1/min')
+              }
+              else {
+                xml.ele(key2, this.patient_vitals[key2])
+              }
+            }
 
-}
-,} 
+          var xmlString = xml.end({
+            pretty: true
+          });
+          const blob = new Blob([xmlString], {
+            type: 'text/xml'
+          })
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = 'data.xml'
+          link.click()
+        }
+      }, }
+
+/*       saveXML()
+      const xml = xmlbuilder.create('Scenario', {
+            encoding: 'UTF-8'
+          })
+          xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel", 'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+        'contentVersion':"BioGears_7.5"})
+        
+        
+        */
   </script>
 
 <style>
