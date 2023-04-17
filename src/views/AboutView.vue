@@ -1,7 +1,23 @@
 <template>
   <v-main>
+
   <v-row class="justify-center">
   <v-col cols="12" sm="8" md="6">
+<<<<<<< HEAD
+    <p>
+    This is the MoHSES Scenario and State File Design Web Interface developed by Jake Flynn, Sanika Joshi, and Megan Luu for their 2023 Bioengineering Capstone project.
+    This project was developed under the mentorship of Dr. David Hananel, Dr. Rainer Leuschke, and Dr. Austin Baird from the UW CREST Lab. The purpose
+    of this tool is to allow for an accessible, easy-to-use interface for users to design customized patient scenario files that are compatible with the CREST
+    Advanced Modular Manikin (AMM). 
+    </p>
+    <br>
+    <p>
+    The process to generate these patient scenario files is two-fold. First, users will use the BioGears Patient Creation Tool tab to configure a patient and
+    generate a BioGears patient state XML file. Then, users will input this generated BioGears patient state file into the MoHSES Scenario Creation tool tab
+    to generate a MoHSES-compatible scenario file. 
+  </p>
+<<<<<<< HEAD
+=======
     <svg
    width="550px"
    height="600px"
@@ -66,16 +82,20 @@
   Reset Form
   </v-btn>
   </v-form>
+>>>>>>> main
+=======
+  <br>
+>>>>>>> 164d6b8c9fe8f02a9b4ebb853b3a2dda66432ac3
   </v-col>
   </v-row>
   </v-main>
-  <!-- <ul>
-    <li v-for="item in name" :key="item">{{ item }}</li>
-  </ul> -->
 </template>
 
 <script>
 export default {
+<<<<<<< HEAD
+}
+=======
 data: () => ({
   name: []
 }),
@@ -117,6 +137,7 @@ computed: {
   }
 },
 };
+>>>>>>> main
 </script>
 
 <style scoped>
