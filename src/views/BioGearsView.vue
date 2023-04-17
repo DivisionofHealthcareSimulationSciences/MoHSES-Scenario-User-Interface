@@ -454,63 +454,63 @@ import xmlbuilder from 'xmlbuilder'
             standalone: "yes"
           })
           xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel", 'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
-        'contentVersion':"BioGears_7.5"})
-         //const Patient = xml.ele('Patient')
-         // Patient.att({'name':this.patient_props['name']})
+          'contentVersion':"BioGears_7.5"})
+          //const Patient = xml.ele('Patient')
+          // Patient.att({'name':this.patient_props['name']})
           for (var key1 in this.patient_props) {
-              if (key1 == 'age') {
-                const Age = xml.ele('Age')
-                Age.att('value', this.patient_props[key1])
-                Age.att('units', 'yr')
-              }
-              else if (key1 == 'height') {
-                const Height = xml.ele('Height')
-                Height.att('value', this.patient_props[key1])
-                Height.att('units', '')
-              }
-              else if (key1 == 'weight') {
-                const Weight = xml.ele('Weight')
-                Weight.att('value', this.patient_props[key1])
-                Weight.att('units', 'kg')
-              }
-              else {
-                xml.ele(key1, this.patient_props[key1])
-              }
+            if (key1 == 'age') {
+              const Age = xml.ele('Age')
+              Age.att('value', this.patient_props[key1])
+              Age.att('units', 'yr')
             }
+            else if (key1 == 'height') {
+              const Height = xml.ele('Height')
+              Height.att('value', this.patient_props[key1])
+              Height.att('units', '')
+            }
+            else if (key1 == 'weight') {
+              const Weight = xml.ele('Weight')
+              Weight.att('value', this.patient_props[key1])
+              Weight.att('units', 'kg')
+            }
+            else {
+              xml.ele(key1, this.patient_props[key1])
+            }
+          }
         
-            for (var key2 in this.patient_vitals) {
-              if (key2 == 'BloodTypeRh') {
-                if (this.patient_vitals[key2] == 'Positive') {
-                  xml.ele(key2, 'true')
-                }
-                else if (this.patient_vitals[key2] == 'Negative') {
-                  xml.ele(key2, 'false')
-                }
+          for (var key2 in this.patient_vitals) {
+            if (key2 == 'BloodTypeRh') {
+              if (this.patient_vitals[key2] == 'Positive') {
+                xml.ele(key2, 'true')
               }
-              else if (key2 == 'DiastolicArterialPressureBaseline') {
-                const DiastolicArterialPressureBaseline = xml.ele('DiastolicArterialPressureBaseline')
-                DiastolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-                DiastolicArterialPressureBaseline.att('units', 'mmHg')
-              }
-              else if (key2 == 'SystolicArterialPressureBaseline') {
-                const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
-                SystolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-                SystolicArterialPressureBaseline.att('units', 'mmHg')
-              }
-              else if (key2 == 'HeartRateBaseline') {
-                const HeartRate = xml.ele('HeartRateBaseline')
-                HeartRate.att('value', this.patient_vitals[key2])
-                HeartRate.att('units', '1/min')
-              }
-              else if (key2 == 'RespirationRateBaseline') {
-                const RespRate = xml.ele('RespirationRateBaseline')
-                RespRate.att('value', this.patient_vitals[key2])
-                RespRate.att('units', '1/min')
-              }
-              else {
-                xml.ele(key2, this.patient_vitals[key2])
+              else if (this.patient_vitals[key2] == 'Negative') {
+                xml.ele(key2, 'false')
               }
             }
+            else if (key2 == 'DiastolicArterialPressureBaseline') {
+              const DiastolicArterialPressureBaseline = xml.ele('DiastolicArterialPressureBaseline')
+              DiastolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
+              DiastolicArterialPressureBaseline.att('units', 'mmHg')
+            }
+            else if (key2 == 'SystolicArterialPressureBaseline') {
+              const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
+              SystolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
+              SystolicArterialPressureBaseline.att('units', 'mmHg')
+            }
+            else if (key2 == 'HeartRateBaseline') {
+              const HeartRate = xml.ele('HeartRateBaseline')
+              HeartRate.att('value', this.patient_vitals[key2])
+              HeartRate.att('units', '1/min')
+            }
+            else if (key2 == 'RespirationRateBaseline') {
+              const RespRate = xml.ele('RespirationRateBaseline')
+              RespRate.att('value', this.patient_vitals[key2])
+              RespRate.att('units', '1/min')
+            }
+            else {
+              xml.ele(key2, this.patient_vitals[key2])
+            }
+          }
 
           var xmlString = xml.end({
             pretty: true
