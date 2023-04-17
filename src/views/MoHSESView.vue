@@ -38,7 +38,7 @@
               <v-window-item value="option-1" transition="scale" reverse-transition="scale">
                 <v-card flat>
                   <v-card-text>
-                    <v-select v-model="patient_props['type']" :items="types" :rules="[v => !!v || 'Type is required']" label="Instructor Type" required clearable></v-select>
+                    <v-select v-model="patient_props['type']" :items="types" label="Instructor Type" required clearable></v-select>
                     <v-text-field v-model="scenario_props['name']" label="Scenario Name" required clearable></v-text-field>
                     <v-combobox v-model="scenario_props['authors']" label="Authors" required clearable multiple chips hint='Click "enter" to add multiple items'></v-combobox>
                   </v-card-text>
@@ -58,22 +58,24 @@
             <v-window-item value="option-2" transition="scale" reverse-transition="scale">
               <v-card flat>
                 <v-card-text>
-                  <v-text-field v-model="patient_props['name']" :rules="nameRules" label="Name" required clearable></v-text-field>
-                  <v-text-field v-model="patient_props['title']" :rules="nameRules" label="Title or Rank" required clearable></v-text-field>
-                  <v-select v-model="patient_props['gender']" :items="genders" :rules="[v => !!v || 'Sex is required']" label="Sex" required clearable></v-select>
-                  <v-slider v-model="patient_props['age']" label="Age" class="align-center" :max="age_max" :min="age_min" :step="1" clearable>
+                  <p style="font-size: 20px">Please enter patient properties:</p>
+                  <br>
+                  <v-text-field v-model="patient_props['name']" label="Name" required clearable></v-text-field>
+                  <v-text-field v-model="patient_props['title']" label="Title or Rank" required clearable></v-text-field>
+                  <v-select v-model="patient_props['gender']" :items="genders" label="Sex" required clearable></v-select>
+                  <v-slider v-model="patient_props['age']" label="Age" class="align-center" :max="age_max" :min="age_min" :step="1">
                     <template v-slot:append>
-                      <v-text-field v-model="patient_props['age']" hide-details single-line density="compact" type="number" clearable style="width: 110px"></v-text-field>
+                      <v-text-field v-model="patient_props['age']" hide-details single-line density="compact" type="number" suffix="years" style="width: 120px"></v-text-field>
                     </template>
                   </v-slider>
-                  <v-slider v-model="patient_props['height']" label="Height [cm]" class="align-center" :max="height_max" :min="height_min" :step="0.1" clearable>
+                  <v-slider v-model="patient_props['height']" label="Height" class="align-center" :max="height_max" :min="height_min" :step="0.1">
                     <template v-slot:append>
-                      <v-text-field v-model="patient_props['height']" hide-details clearable single-line density="compact" type="number" style="width: 110px"></v-text-field>
+                      <v-text-field v-model="patient_props['height']" hide-details single-line density="compact" type="number" suffix="cm" style="width: 110px"></v-text-field>
                     </template>
                   </v-slider>
-                  <v-slider v-model="patient_props['weight']" label="Weight [kg]" class="align-center" :max="weight_max" :min="weight_min" :step="0.1" clearable>
+                  <v-slider v-model="patient_props['weight']" label="Weight" class="align-center" :max="weight_max" :min="weight_min" :step="0.1">
                     <template v-slot:append>
-                      <v-text-field v-model="patient_props['weight']" hide-details single-line clearable density="compact" type="number" style="width: 110px"></v-text-field>
+                      <v-text-field v-model="patient_props['weight']" hide-details single-line density="compact" type="number" suffix="kg" style="width: 110px"></v-text-field>
                     </template>
                   </v-slider>
                 </v-card-text>
@@ -92,13 +94,31 @@
             <v-window-item value="option-3" transition="scale" reverse-transition="scale">
               <v-card flat>
                 <v-card-text>
+                  <p style="font-size: 20px">Please enter environment properties:</p>
+                  <br>
                   <v-textarea v-model="environment_props['surrounding']" label="Surrounding" clearable></v-textarea>
-                  <v-text-field v-model="environment_props['altitude']" :rules="nameRules" label="Altitude or Elevation" required clearable></v-text-field>
-                  <v-text-field v-model="environment_props['temperature']" :rules="nameRules" label="Temperature [C]" required clearable></v-text-field>
-                  <v-text-field v-model="environment_props['pressure']" :rules="nameRules" label="Pressure [mmHg]" required clearable></v-text-field>
-                  <v-text-field v-model="environment_props['co2']" :rules="nameRules" label="Ambient CO2 [fraction]" required clearable></v-text-field>
                   <v-combobox v-model="environment_props['sounds']" label="Ambient Sounds" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
                   <v-combobox v-model="environment_props['smells']" label="Smells" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
+                  <v-slider v-model="environment_props['altitude']" label="Altitude" required clearable class="align-center" :max="altitude_max" :min="altitude_min" :step="0.1">
+                    <template v-slot:append>
+                      <v-text-field v-model="environment_props['altitude']" hide-details clearable single-line density="compact" type="number" suffix="m" style="width: 140px"></v-text-field>
+                    </template>
+                  </v-slider>
+                  <v-slider v-model="environment_props['temperature']" label="Temperature" required clearable class="align-center" :max="temperature_max" :min="temperature_min" :step="0.1">
+                    <template v-slot:append>
+                      <v-text-field v-model="environment_props['temperature']" hide-details clearable single-line density="compact" type="number" suffix="Celsius" style="width: 180px"></v-text-field>
+                    </template>
+                  </v-slider>
+                  <v-slider v-model="environment_props['pressure']" label="Pressure" required clearable class="align-center" :max="pressure_max" :min="pressure_min" :step="0.1">
+                    <template v-slot:append>
+                      <v-text-field v-model="environment_props['pressure']" hide-details clearable single-line density="compact" type="number" suffix="mmHg" style="width: 180px"></v-text-field>
+                    </template>
+                  </v-slider>
+                  <v-slider v-model="environment_props['co2']" label="Ambient CO2 [fraction]" required clearable class="align-center" :max="co2_max" :min="co2_min" :step="0.1">
+                    <template v-slot:append>
+                      <v-text-field v-model="environment_props['co2']" hide-details clearable single-line density="compact" type="number" style="width: 140px"></v-text-field>
+                    </template>
+                  </v-slider>
                 </v-card-text>
               </v-card>
               <br>
@@ -115,14 +135,14 @@
             <v-window-item value="option-4" transition="scale" reverse-transition="scale">
               <v-card flat>
                 <v-card-text>
+                  <p style="font-size: 20px">Please enter educational encounter properties:</p>
+                  <br>
                   <v-textarea v-model="ed_props['instruction']" label="Instructions" clearable></v-textarea>
                   <v-textarea v-model="ed_props['narrative']" label="Narrative" clearable></v-textarea>
-                  <v-text-field v-model="ed_props['learnerCount']" label="Number of Learners" clearable></v-text-field>
                   <v-text-field v-model="ed_props['role']" label="Roles" clearable></v-text-field>
                   <v-combobox v-model="ed_props['setup_checklist']" label="Setup Checklist" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
                   <v-combobox v-model="ed_props['equipment']" label="Equipment" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
                   <v-combobox v-model="ed_props['supplies']" label="Supplies" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
-                  <v-text-field v-model="ed_props['duration']" label="Estimated Duration" clearable></v-text-field>
                   <v-text-field v-model="ed_props['scenario_type']" label="Scenario Type" clearable></v-text-field>
                   <v-text-field v-model="ed_props['assessment_type']" label="Assessment Type" clearable></v-text-field>
                   <v-text-field v-model="ed_props['learner_group']" label="Learner Group" clearable></v-text-field>
@@ -130,6 +150,17 @@
                   <v-combobox v-model="ed_props['task']" label="Task Descriptions" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
                   <v-combobox v-model="ed_props['conditions']" label="Performance Conditions" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
                   <v-combobox v-model="ed_props['exit_criteria']" label="Exit Criteria" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
+                  <v-slider v-model="ed_props['duration']" label="Estimated Duration" clearable class="align-center" :max="100" :min="0" :step="1">
+                    <template v-slot:append>
+                      <v-text-field v-model="ed_props['duration']" hide-details clearable single-line density="compact" type="number" suffix="min" style="width: 180px"></v-text-field>
+                    </template>
+                  </v-slider>
+                  <v-slider v-model="ed_props['learnerCount']" label="Number of Learners" clearable class="align-center" :max="100" :min="0" :step="1">
+                    <template v-slot:append>
+                      <v-text-field v-model="ed_props['learnerCount']" hide-details clearable single-line density="compact" type="number" style="width: 180px"></v-text-field>
+                    </template>
+                  </v-slider>
+
                 </v-card-text>
               </v-card>
               <br>
@@ -144,6 +175,10 @@
               <br>
             </v-window-item>
             <v-window-item value="option-5" transition="scale" reverse-transition="scale">
+              <v-card flat>
+              <v-card-text>
+               <p style="font-size: 20px">Please enter scenario capabilities:</p>
+               <br>
               <div v-for="(exp, index) in capability" :key="index">
                 <v-checkbox-btn v-model="exp.required" label="Required"></v-checkbox-btn>
                 <v-text-field clearable v-model="exp.name" label="Capability Name"></v-text-field>
@@ -169,6 +204,8 @@
               <v-btn :disabled="!valid" color="success" class="mr-4" @click="saveXML"> Submit </v-btn>
               <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
               <br>
+              </v-card-text>
+              </v-card>
             </v-window-item>
           </v-form>
         </v-window>
@@ -179,6 +216,14 @@
     import xmlbuilder from 'xmlbuilder'
     export default {
       data: () => ({
+        altitude_min: 0,
+        altitude_max: 10000,
+        temperature_min: 0,
+        temperature_max: 100,
+        pressure_min: 0,
+        pressure_max: 1000,
+        co2_min: 0,
+        co2_max: 1,
         age_min: 0,
         age_max: 120,
         height_min: 0,
@@ -213,10 +258,10 @@
         },
         environment_props: {
           "surrounding": [],
-          "altitude": [],
-          "temperature": [],
-          "pressure": [],
-          "co2": [],
+          "altitude": 0,
+          "temperature": 20,
+          "pressure": 760,
+          "co2": 0.04,
           "sounds": [],
           "smells": []
         },
@@ -237,9 +282,6 @@
           'conditions': [],
           'exit_criteria': []
         },
-        nameRules: [
-          v => !!v || 'Name is required',
-        ],
         genders: ['Male', 'Female'],
         types: ['Medical Doctor', 'Paramedic', 'Nurse'],
       }),
