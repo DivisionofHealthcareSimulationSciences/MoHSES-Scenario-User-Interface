@@ -12,10 +12,11 @@
     </p>
     <br>
     <p>
-    The process to generate these patient scenario files is two-fold. First, users will use the BioGears Scenario Creation Tool tab to configure a patient and
-    generate a BioGears patient state XML file. Then, users will input this generated BioGears patient state file into the /insert tab name/ tab
-    to generate a MoHSES-compatible scenario file.
+    The process to generate these patient scenario files is two-fold. First, users will use the BioGears Patient Creation Tool tab to configure a patient and
+    generate a BioGears patient state XML file. Then, users will input this generated BioGears patient state file into the MoHSES Scenario Creation tool tab
+    to generate a MoHSES-compatible scenario file. 
   </p>
+<<<<<<< HEAD
 =======
     <svg
    width="550px"
@@ -82,6 +83,9 @@
   </v-btn>
   </v-form>
 >>>>>>> main
+=======
+  <br>
+>>>>>>> 164d6b8c9fe8f02a9b4ebb853b3a2dda66432ac3
   </v-col>
   </v-row>
   </v-main>

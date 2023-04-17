@@ -495,9 +495,7 @@
 </v-row> 
 <v-row class="justify-center">
   <v-form>
-  <v-col cols="auto">
-    <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-left"></v-btn>
-  </v-col>
+
   <v-btn
     :disabled="!valid"
     color="success"
