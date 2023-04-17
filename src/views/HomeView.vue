@@ -451,7 +451,7 @@
         </v-row>
         <br>
         </v-window-item>
-
+        
         <v-window-item value="option-5" :transition="false" :reverse-transition="false">
           <div v-for="(exp, index) in capability" :key="index">
               <v-checkbox-btn v-model="exp.required" label="Required"></v-checkbox-btn>
