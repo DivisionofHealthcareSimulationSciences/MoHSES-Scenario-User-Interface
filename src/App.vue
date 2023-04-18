@@ -19,10 +19,9 @@
       temporary
     >
       <v-list nav>
-        <v-list-item title="Home" to="/"></v-list-item>
+        <v-list-item title="BioGears Scenario Creation Tool" to="/"></v-list-item>
         <v-list-item title="MoHSES Scenario Creation Tool" to="/MoHSES"></v-list-item>
-        <v-list-item title="BioGears Scenario Creation Tool" to="/BioGears"></v-list-item>
-        <v-list-item title="About" to="/about"></v-list-item>
+        <v-list-item title="About" to="/About"></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
