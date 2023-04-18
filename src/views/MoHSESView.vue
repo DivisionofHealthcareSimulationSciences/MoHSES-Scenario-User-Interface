@@ -71,17 +71,17 @@
                          <v-select v-model="patient_props['gender']" :items="genders" label="Sex" required clearable></v-select>
                          <v-slider v-model="patient_props['age']" label="Age" class="align-center" :max="age_max" :min="age_min" :step="1">
                             <template v-slot:append>
-                               <v-text-field v-model="patient_props['age']" hide-details single-line density="compact" type="number" suffix="years" style="width: 120px"></v-text-field>
+                               <v-text-field v-model="patient_props['age']" hide-details single-line density="compact" type="number" suffix="years" style="width: 180px"></v-text-field>
                             </template>
                          </v-slider>
                          <v-slider v-model="patient_props['height']" label="Height" class="align-center" :max="height_max" :min="height_min" :step="0.1">
                             <template v-slot:append>
-                               <v-text-field v-model="patient_props['height']" hide-details single-line density="compact" type="number" suffix="cm" style="width: 110px"></v-text-field>
+                               <v-text-field v-model="patient_props['height']" hide-details single-line density="compact" type="number" suffix="cm" style="width: 180px"></v-text-field>
                             </template>
                          </v-slider>
                          <v-slider v-model="patient_props['weight']" label="Weight" class="align-center" :max="weight_max" :min="weight_min" :step="0.1">
                             <template v-slot:append>
-                               <v-text-field v-model="patient_props['weight']" hide-details single-line density="compact" type="number" suffix="kg" style="width: 110px"></v-text-field>
+                               <v-text-field v-model="patient_props['weight']" hide-details single-line density="compact" type="number" suffix="kg" style="width: 180px"></v-text-field>
                             </template>
                          </v-slider>
                       </v-card-text>
@@ -107,7 +107,7 @@
                          <v-combobox v-model="environment_props['smells']" label="Smells" multiple clearable chips hint='Click "enter" to add multiple items'></v-combobox>
                          <v-slider v-model="environment_props['altitude']" label="Altitude" required clearable class="align-center" :max="altitude_max" :min="altitude_min" :step="0.1">
                             <template v-slot:append>
-                               <v-text-field v-model="environment_props['altitude']" hide-details clearable single-line density="compact" type="number" suffix="m" style="width: 140px"></v-text-field>
+                               <v-text-field v-model="environment_props['altitude']" hide-details clearable single-line density="compact" type="number" suffix="m" style="width: 180px"></v-text-field>
                             </template>
                          </v-slider>
                          <v-slider v-model="environment_props['temperature']" label="Temperature" required clearable class="align-center" :max="temperature_max" :min="temperature_min" :step="0.1">
@@ -122,7 +122,7 @@
                          </v-slider>
                          <v-slider v-model="environment_props['co2']" label="Ambient CO2 [fraction]" required clearable class="align-center" :max="co2_max" :min="co2_min" :step="0.1">
                             <template v-slot:append>
-                               <v-text-field v-model="environment_props['co2']" hide-details clearable single-line density="compact" type="number" style="width: 140px"></v-text-field>
+                               <v-text-field v-model="environment_props['co2']" hide-details clearable single-line density="compact" type="number" style="width: 180px"></v-text-field>
                             </template>
                          </v-slider>
                       </v-card-text>
@@ -163,7 +163,7 @@
                          </v-slider>
                          <v-slider v-model="ed_props['learnerCount']" label="Number of Learners" clearable class="align-center" :max="100" :min="0" :step="1">
                             <template v-slot:append>
-                               <v-text-field v-model="ed_props['learnerCount']" hide-details clearable single-line density="compact" type="number" style="width: 180px"></v-text-field>
+                               <v-text-field v-model="ed_props['learnerCount']" hide-details clearable single-line density="compact" type="number" suffix="learners" style="width: 180px"></v-text-field>
                             </template>
                          </v-slider>
                       </v-card-text>
