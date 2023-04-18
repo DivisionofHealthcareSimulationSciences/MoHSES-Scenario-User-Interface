@@ -36,14 +36,22 @@
              <v-form ref="form" v-model="valid" lazy-validation>
                 <v-main>
                    <v-window-item value="home" transition="scale" reverse-transition="scale">
-                      <p>This is the home page.</p>
-                      <v-col cols="auto">
-                         <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
-                      </v-col>
+                      <v-card flat>
+                         <v-card-text>
+                            <h1 style="font-size: 36px">Welcome to the MoHSES Scenario Creation Tool!</h1>
+                            <br>
+                            <p style="font-size: 14px">This tool is designed to simplify the process of generating a MoHSES scenario file, which can be used with the MoHSES manikin at the CREST lab. To get started, you will need to use the BioGears Scenario Creation Tool to generate a patient state file and BioGears scenario file, and run BioGears using these files to generate a state file. Once you have your state file, you can use our tool to create your MoHSES scenario file. Simply upload your state file, select the desired parameters, and let the tool do the rest! With our user-friendly interface, you can quickly generate a MoHSES scenario file to use with the MoHSES manikin.</p>
+                            <v-col cols="auto">
+                               <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
+                            </v-col>
+                         </v-card-text>
+                      </v-card>
                    </v-window-item>
                    <v-window-item value="option-1" transition="scale" reverse-transition="scale">
                       <v-card flat>
                          <v-card-text>
+                            <p style="font-size: 20px">Please enter scenario properties:</p>
+                            <br>
                             <v-select v-model="patient_props['type']" :items="types" label="Instructor Type" required clearable></v-select>
                             <v-text-field v-model="scenario_props['name']" label="Scenario Name" required clearable></v-text-field>
                             <v-combobox v-model="scenario_props['authors']" label="Authors" required clearable multiple chips hint='Click "enter" to add multiple items'></v-combobox>
