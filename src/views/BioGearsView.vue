@@ -268,7 +268,7 @@
 
         <v-window-item value="option-3" :transition="false" :reverse-transition="false">
           <v-main>
-            <v-row class="justify-center">
+            <v-row>
               <v-col cols="12" sm="8" md="6" class="my-content">
                 <svg
                   width="550px"
@@ -317,41 +317,47 @@
                     id="Back"
                     d="m 40.739147,19.072339 0.063,-2.62462 -0.71441,1.15181 -4.37994,1.49796 4.97857,8.36746 1.83043,5.08188 -0.21949,-13.55362 z m -7.42423,1.95717 -1.57473,1.56517 -0.81404,2.06905 -0.38603,2.52859 1.83679,-1.23927 2.76223,-1.15538 1.84691,3.4342 1.13679,5.49715 0.0767,5.8593 4.07066,1.10938 -0.10355,-7.94098 -1.94107,-4.90022 -5.04395,-8.19334 z m 13.23814,-1.85796 -0.063,-2.62463 0.71441,1.15181 4.37994,1.49796 -4.97857,8.36746 -1.83043,5.08189 0.21949,-13.55362 z m 7.42423,1.95716 1.57473,1.56518 0.81404,2.06904 0.0384,2.52859 -1.48921,-1.23926 -2.76223,-1.15539 -1.84691,3.4342 -1.13679,5.49715 -0.0767,5.8593 -4.07066,1.10938 0.10355,-7.94098 1.94107,-4.90021 5.04395,-8.19335 z m -11.12961,-1.764514 0.53876,25.33066 0.48967,-0.0297 0.65658,-25.3387 -0.28147,-0.84188 -1.25059,-4.9e-4 z" />
                 </svg>
+              </v-col>
                 <!-- <div v-if="showTextBox"> -->
+              <v-col>
                 <v-form
                   ref="form"
                   v-model="valid"
                   lazy-validation
                   >
-                  <div>
-                  <!-- <v-text-field :label="name[name.length -1]" placeholder="Enter your condition here"></v-text-field> -->
-                    <v-text-field v-for="(item, index) in name"
+                    <v-combobox v-for="(item, index) in name"
                       :key="index"
                       :label="Object.keys(item)[0]"
+                      :items='patient_body[Object.keys(item)[0]]'
                       v-model="item[Object.keys(item)[0]]" 
-                      placeholder="Enter your condition here"/>
-                  </div>
-                  <v-col cols="auto">
-                    <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-left"></v-btn>
-                  </v-col>
-                  <v-btn
-                    :disabled="!valid"
-                    color="success"
-                    class="mr-4"
-                    >
-                    Submit
-                  </v-btn>
-                  <v-btn
-                    color="error"
-                    class="mr-4"
-                    @click="reset"
-                    >
-                    Reset Form
-                  </v-btn>
+                      multiple
+                      chips></v-combobox>
                 </v-form>
               </v-col>
             </v-row>
-          </v-main>
+
+            <v-row class="justify-center">
+              <v-form>
+                <v-col cols="auto">
+                    <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-left"></v-btn>
+                </v-col>
+                <v-btn
+                  :disabled="!valid"
+                  color="success"
+                  class="mr-4"
+                  >
+                  Submit
+                </v-btn>
+                <v-btn
+                  color="error"
+                  class="mr-4"
+                  @click="reset"
+                  >
+                  Reset Form
+                </v-btn>
+              </v-form>
+            </v-row>
+          </v-main>          
         </v-window-item>
       </v-window>
     </v-col>
@@ -409,6 +415,15 @@ import xmlbuilder from 'xmlbuilder'
         'Male',
         'Female'
       ],
+      patient_body: {
+        'Head':['Hemorrhage', 'Brain Injury', 'Burn Wound'],
+        'Neck':['Sprain', 'Burn Wound'], 
+        'Chest':['Heart Attack', 'Cardiac Arrest', 'Tension Pneumothorax', 'Burn Wound'], 
+        'Back':['Burn Wound'],
+        'Abdomen':['Burn Wound'], 
+        'Pelvis':['Burn Wound'],
+        'Extremities':['Burn Wound'],
+      },
       blood_types: [
         'A',
         'B',
