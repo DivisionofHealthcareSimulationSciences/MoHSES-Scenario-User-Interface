@@ -1,10 +1,10 @@
 <template>
-    <v-toolbar color="green">
+    <v-toolbar style="color: white" color="#4b0082">
        <v-toolbar-title>MoHSES Scenario Creation Tool</v-toolbar-title>
     </v-toolbar>
     <v-row>
        <v-col cols="3">
-          <v-tabs v-model="tab" direction="vertical" color="green">
+          <v-tabs v-model="tab" direction="vertical" color="#4b0082">
              <v-tab value="home">
                 <v-icon start> mdi-home </v-icon>
                 About this page
