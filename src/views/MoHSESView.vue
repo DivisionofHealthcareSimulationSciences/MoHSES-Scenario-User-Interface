@@ -177,8 +177,8 @@
             <v-window-item value="option-5" transition="scale" reverse-transition="scale">
               <v-card flat>
               <v-card-text>
-               <p style="font-size: 20px">Please enter scenario capabilities:</p>
-               <br>
+              <p style="font-size: 20px">Please enter scenario capabilities:</p>
+              <br>
               <div v-for="(exp, index) in capability" :key="index">
                 <v-checkbox-btn v-model="exp.required" label="Required"></v-checkbox-btn>
                 <v-text-field clearable v-model="exp.name" label="Capability Name"></v-text-field>
@@ -195,9 +195,6 @@
               <v-row justify="center">
                 <v-col cols="auto">
                   <v-btn @click="nextTab('option-4')" density="compact" icon="mdi-arrow-left"></v-btn>
-                </v-col>
-                <v-col cols="auto">
-                  <v-btn @click="nextTab('option-6')" density="compact" icon="mdi-arrow-right"></v-btn>
                 </v-col>
               </v-row>
               <br>
