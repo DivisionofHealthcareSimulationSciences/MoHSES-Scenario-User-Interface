@@ -1,6 +1,7 @@
 <template>
   <v-toolbar
-    color="primary"
+    color="#4b0082"
+    style="color: white"
   >
     <v-toolbar-title>BioGears Scenario Creation Tool</v-toolbar-title>
   </v-toolbar>
@@ -10,7 +11,7 @@
       <v-tabs
         v-model="tab"
         direction="vertical"
-        color="primary"
+        color="#4b0082"
       >
         <v-tab value="home">
           <v-icon start>
