@@ -2,74 +2,70 @@
     <v-toolbar style="color: white" color="#4b0082">
        <v-toolbar-title>MoHSES Scenario Creation Tool</v-toolbar-title>
     </v-toolbar>
-    <v-row>
-       <v-col cols="3">
-          <v-tabs v-model="tab" direction="vertical" color="#4b0082">
-             <v-tab value="home">
-                <v-icon start> mdi-home </v-icon>
-                About this page
-             </v-tab>
-             <v-tab value="option-1">
-                <v-icon start> mdi-form-textbox </v-icon>
-                Scenario Properties
-             </v-tab>
-             <v-tab value="option-2">
-                <v-icon start> mdi-account </v-icon>
-                Patient Properties
-             </v-tab>
-             <v-tab value="option-3">
-                <v-icon start> mdi-access-point </v-icon>
-                Environment Properties
-             </v-tab>
-             <v-tab value="option-4">
-                <v-icon start> mdi-list-status </v-icon>
-                Educational Encounter Properties
-             </v-tab>
-             <v-tab value="option-5">
-                <v-icon start> mdi-tools </v-icon>
-                Capabilities
-             </v-tab>
-          </v-tabs>
-       </v-col>
-       <v-col cols="8" class="my-content">
-          <v-window v-model="tab">
+    <v-tabs large v-model="tab" color="#4b0082">
+       <v-tab value="home">
+          <v-icon start> mdi-home </v-icon>
+          About this page
+       </v-tab>
+       <v-tab value="option-1">
+          <v-icon start> mdi-form-textbox </v-icon>
+          Scenario Properties
+       </v-tab>
+       <v-tab value="option-2">
+          <v-icon start> mdi-account </v-icon>
+          Patient Properties
+       </v-tab>
+       <v-tab value="option-3">
+          <v-icon start> mdi-access-point </v-icon>
+          Environment Properties
+       </v-tab>
+       <v-tab value="option-4">
+          <v-icon start> mdi-list-status </v-icon>
+          Educational Encounter Properties
+       </v-tab>
+       <v-tab value="option-5">
+          <v-icon start> mdi-tools </v-icon>
+          Capabilities
+       </v-tab>
+    </v-tabs>
+    <v-main class="bg-grey-lighten-3">
+       <v-container>
+          <v-window v-model="tab" class="mt-n12">
              <v-form ref="form" v-model="valid" lazy-validation>
-                <v-main>
-                   <v-window-item value="home" transition="scale" reverse-transition="scale">
-                      <v-card flat>
-                         <v-card-text>
-                            <h1 style="font-size: 36px">Welcome to the MoHSES Scenario Creation Tool!</h1>
-                            <br>
-                            <p style="font-size: 14px">This tool is designed to simplify the process of generating a MoHSES scenario file, which can be used with the MoHSES manikin at the CREST lab. To get started, you will need to use the BioGears Scenario Creation Tool to generate a patient state file and BioGears scenario file, and run BioGears using these files to generate a state file. Once you have your state file, you can use our tool to create your MoHSES scenario file. Simply upload your state file, select the desired parameters, and let the tool do the rest! With our user-friendly interface, you can quickly generate a MoHSES scenario file to use with the MoHSES manikin.</p>
-                            <v-col cols="auto">
-                               <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
-                            </v-col>
-                         </v-card-text>
-                      </v-card>
-                   </v-window-item>
-                   <v-window-item value="option-1" transition="scale" reverse-transition="scale">
-                      <v-card flat>
-                         <v-card-text>
-                            <p style="font-size: 20px">Please enter scenario properties:</p>
-                            <br>
-                            <v-select v-model="patient_props['type']" :items="types" label="Instructor Type" required clearable></v-select>
-                            <v-text-field v-model="scenario_props['name']" label="Scenario Name" required clearable></v-text-field>
-                            <v-combobox v-model="scenario_props['authors']" label="Authors" required clearable multiple chips hint='Click "enter" to add multiple items'></v-combobox>
-                         </v-card-text>
-                      </v-card>
-                      <br>
-                      <v-row justify="center">
-                         <v-col cols="auto">
-                            <v-btn @click="nextTab('home')" density="compact" icon="mdi-arrow-left"></v-btn>
-                         </v-col>
-                         <v-col cols="auto">
-                            <v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-right"></v-btn>
-                         </v-col>
-                      </v-row>
-                      <br>
-                   </v-window-item>
-                </v-main>
-                <v-window-item value="option-2" transition="scale" reverse-transition="scale">
+                <v-window-item value="home">
+                   <v-card class="bg-grey-lighten-3" flat>
+                      <v-card-text>
+                         <h1 style="font-size: 36px">Welcome to the MoHSES Scenario Creation Tool!</h1>
+                         <br>
+                         <p style="font-size: 14px">This tool is designed to simplify the process of generating a MoHSES scenario file, which can be used with the MoHSES manikin at the CREST lab. To get started, you will need to use the BioGears Scenario Creation Tool to generate a patient state file and BioGears scenario file, and run BioGears using these files to generate a state file. Once you have your state file, you can use our tool to create your MoHSES scenario file. Simply upload your state file, select the desired parameters, and let the tool do the rest! With our user-friendly interface, you can quickly generate a MoHSES scenario file to use with the MoHSES manikin.</p>
+                      </v-card-text>
+                   </v-card>
+                   <v-col cols="auto">
+                      <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
+                   </v-col>
+                </v-window-item>
+                <v-window-item value="option-1">
+                   <v-card flat>
+                      <v-card-text>
+                         <p style="font-size: 20px">Please enter scenario properties:</p>
+                         <br>
+                         <v-select v-model="patient_props['type']" :items="types" label="Instructor Type" required clearable></v-select>
+                         <v-text-field v-model="scenario_props['name']" label="Scenario Name" required clearable></v-text-field>
+                         <v-combobox v-model="scenario_props['authors']" label="Authors" required clearable multiple chips hint='Click "enter" to add multiple items'></v-combobox>
+                      </v-card-text>
+                   </v-card>
+                   <br>
+                   <v-row justify="center">
+                      <v-col cols="auto">
+                         <v-btn @click="nextTab('home')" density="compact" icon="mdi-arrow-left"></v-btn>
+                      </v-col>
+                      <v-col cols="auto">
+                         <v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-right"></v-btn>
+                      </v-col>
+                   </v-row>
+                   <br>
+                </v-window-item>
+                <v-window-item value="option-2">
                    <v-card flat>
                       <v-card-text>
                          <p style="font-size: 20px">Please enter patient properties:</p>
@@ -105,7 +101,7 @@
                    </v-row>
                    <br>
                 </v-window-item>
-                <v-window-item value="option-3" transition="scale" reverse-transition="scale">
+                <v-window-item value="option-3">
                    <v-card flat>
                       <v-card-text>
                          <p style="font-size: 20px">Please enter environment properties:</p>
@@ -146,7 +142,7 @@
                    </v-row>
                    <br>
                 </v-window-item>
-                <v-window-item value="option-4" transition="scale" reverse-transition="scale">
+                <v-window-item value="option-4">
                    <v-card flat>
                       <v-card-text>
                          <p style="font-size: 20px">Please enter educational encounter properties:</p>
@@ -187,7 +183,7 @@
                    </v-row>
                    <br>
                 </v-window-item>
-                <v-window-item value="option-5" transition="scale" reverse-transition="scale">
+                <v-window-item value="option-5">
                    <v-card flat>
                       <v-card-text>
                          <p style="font-size: 20px">Please enter scenario capabilities:</p>
@@ -205,22 +201,26 @@
                          </div>
                          <v-btn @click="addCapability">Add Capability</v-btn>
                          <br>
-                         <v-row justify="center">
-                            <v-col cols="auto">
-                               <v-btn @click="nextTab('option-4')" density="compact" icon="mdi-arrow-left"></v-btn>
-                            </v-col>
-                         </v-row>
                          <br>
                          <v-btn :disabled="!valid" color="success" class="mr-4" @click="saveXML"> Submit </v-btn>
                          <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
                          <br>
                       </v-card-text>
                    </v-card>
+                   <br>
+                   <br>
+                   <v-row justify="center">
+                      <v-col cols="auto">
+                         <v-btn @click="nextTab('option-4')" density="compact" icon="mdi-arrow-left"></v-btn>
+                      </v-col>
+                   </v-row>
+                   <br>
+                   <br>
                 </v-window-item>
              </v-form>
           </v-window>
-       </v-col>
-    </v-row>
+       </v-container>
+    </v-main>
  </template>
  <script>
     import xmlbuilder from 'xmlbuilder'
