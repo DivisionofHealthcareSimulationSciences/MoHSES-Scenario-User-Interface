@@ -6,13 +6,9 @@
     <v-toolbar-title>BioGears Scenario Creation Tool</v-toolbar-title>
   </v-toolbar>
     
-  <v-row>
-    <v-col cols="3">
-      <v-tabs
-        v-model="tab"
-        direction="vertical"
-        color="#4b0082"
-      >
+  <!-- <v-row> -->
+    <!-- <v-col cols="3"> -->
+      <v-tabs large v-model="tab" color="#4b0082">
         <v-tab value="home">
           <v-icon start>
             mdi-home
@@ -38,13 +34,29 @@
           Configure Injuries
         </v-tab>
       </v-tabs>
-    </v-col>
+    <!-- </v-col> -->
 
-    <v-col cols="8" class="my-content">
+    <!-- <v-col cols="8" class="my-content">
       <v-window v-model="tab">
-        <v-main>
-          <v-window-item value="home" :transition="false" :reverse-transition="false">
-            <p>This is the home page.</p>
+        <v-main> -->
+          <!-- <v-window-item value="home" :transition="false" :reverse-transition="false"> -->
+      <v-main class="bg-grey-lighten-3">
+       <v-container>
+          <v-window v-model="tab" class="mt-n12">
+             <v-form ref="form" v-model="valid" lazy-validation>
+                <v-window-item value="home">
+                   <v-card class="bg-grey-lighten-3" flat>
+                    <v-card-text>
+                      <h1 style="font-size: 36px">Welcome to the BioGears Scenario Creation Tool!</h1>
+                      <br>
+                      <p style="font-size: 14px">This tool is designed to simplify the process of generating BioGears Scenario XML files. First,
+                      input patient information and healthy vitals to define a BioGears patient. Then configure injuries to define a specific patient
+                    scenario and click Submit. This will locally download BioGears-compatible Patient and Scenario XML files, which can then be inputted into BioGears via
+                  command line. After running BioGears with this file, user will have a MoHSES-compatible state file with data on the simulated injured patient's
+                vitals.</p>
+                    </v-card-text>
+                    </v-card>
+
             <v-col cols="auto">
               <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
             </v-col>
@@ -140,7 +152,6 @@
             </v-row>
             <br>
           </v-window-item>
-        </v-main>
 
         <v-window-item value="option-2" :transition="false" :reverse-transition="false">
           <v-card flat>
@@ -268,7 +279,6 @@
         </v-window-item>
 
         <v-window-item value="option-3" :transition="false" :reverse-transition="false">
-          <v-main>
             <v-row>
               <v-col cols="12" sm="8" md="6" class="my-content">
                 <svg
@@ -338,7 +348,6 @@
             </v-row>
 
             <v-row class="justify-center">
-              <v-form>
                 <v-col cols="auto">
                     <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-left"></v-btn>
                 </v-col>
@@ -355,14 +364,14 @@
                   @click="reset"
                   >
                   Reset Form
-                </v-btn>
-              </v-form>
-            </v-row>
-          </v-main>          
+                </v-btn>   
+              </v-row>     
         </v-window-item>
+      </v-form>
       </v-window>
-    </v-col>
-  </v-row>
+    </v-container>
+  </v-main>
+
 </template>
 
 
