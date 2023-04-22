@@ -9,9 +9,9 @@
               This is the MoHSES Scenario and State File Design Web Interface developed by Jake Flynn, Sanika Joshi, and Megan Luu for their 2023 Bioengineering Capstone project.
               This project was developed under the mentorship of Dr. David Hananel, Dr. Rainer Leuschke, and Dr. Austin Baird from the UW CREST Lab. The purpose
               of this tool is to allow for an accessible, easy-to-use interface for users to design customized patient scenario files that are compatible with the CREST
-              Advanced Modular Manikin (AMM). The process to generate these patient scenario files is two-fold. First, users will use the BioGears Patient Creation Tool tab to configure a patient and
-              generate a BioGears patient state XML file. Then, users will input this generated BioGears patient state file into the MoHSES Scenario Creation tool tab
-              to generate a MoHSES-compatible scenario file. 
+              Advanced Modular Manikin (AMM). The process to generate these patient scenario files is two-fold. First, users will use the BioGears Scenario Creation Tool tab to configure a patient and
+              generate a BioGears Scenario XML file. After running this BioGears Scenario file on Biogears, users will have a MoHSES-compatible patient state file, which will be used to generate
+              a MoHSES Scenario file using the MoHSES Scenario Creation tool tab. 
            </v-card-text>
            <br>
            <v-row justify="center">
