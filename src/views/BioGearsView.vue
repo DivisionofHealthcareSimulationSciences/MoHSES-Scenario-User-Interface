@@ -62,9 +62,11 @@
             </v-col>
           </v-window-item>
           
-          <v-window-item value="option-1" :transition="false" :reverse-transition="false">
+          <v-window-item value="option-1">
             <v-card flat>
               <v-card-text>
+                <p style="font-size: 20px">Please enter patient information:</p>
+                <br>
                 <v-text-field
                 v-model="patient_props['Name']"
                 :rules="nameRules"
@@ -80,65 +82,21 @@
                   required
                 ></v-select>
 
-                <v-slider
-                  v-model="patient_props['age']"
-                  label="Age"
-                  class="align-center"
-                  :max="age_max"
-                  :min="age_min"
-                  :step="1"
-                >
-                  <template v-slot:append>
-                    <v-text-field
-                      v-model="patient_props['age']"
-                      hide-details
-                      single-line
-                      density="compact"
-                      type="number"
-                      style="width: 90px"
-                    ></v-text-field>
-                  </template>
-                </v-slider>
-              
-                <v-slider
-                  v-model="patient_props['weight']"
-                  label="Weight [kg]"
-                  class="align-center"
-                  :max="weight_max"
-                  :min="weight_min"
-                  :step="0.1"
-                >
-                  <template v-slot:append>
-                    <v-text-field
-                      v-model="patient_props['weight']"
-                      hide-details
-                      single-line
-                      density="compact"
-                      type="number"
-                      style="width: 90px"
-                    ></v-text-field>
-                  </template>
-                </v-slider>
-
-                <v-slider
-                  v-model="patient_props['height']"
-                  label="Height [cm]"
-                  class="align-center"
-                  :max="height_max"
-                  :min="height_min"
-                  :step="0.1"
-                >
-                  <template v-slot:append>
-                    <v-text-field
-                      v-model="patient_props['height']"
-                      hide-details
-                      single-line
-                      density="compact"
-                      type="number"
-                      style="width: 90px"
-                    ></v-text-field>
-                  </template>
-                </v-slider>
+                <v-slider v-model="patient_props['age']" label="Age" class="align-center" :max="age_max" :min="age_min" :step="1">
+                            <template v-slot:append>
+                               <v-text-field v-model="patient_props['age']" hide-details single-line density="compact" type="number" suffix="years" style="width: 180px"></v-text-field>
+                            </template>
+                         </v-slider>
+                         <v-slider v-model="patient_props['height']" label="Height" class="align-center" :max="height_max" :min="height_min" :step="0.1">
+                            <template v-slot:append>
+                               <v-text-field v-model="patient_props['height']" hide-details single-line density="compact" type="number" suffix="cm" style="width: 180px"></v-text-field>
+                            </template>
+                         </v-slider>
+                         <v-slider v-model="patient_props['weight']" label="Weight" class="align-center" :max="weight_max" :min="weight_min" :step="0.1">
+                            <template v-slot:append>
+                               <v-text-field v-model="patient_props['weight']" hide-details single-line density="compact" type="number" suffix="kg" style="width: 180px"></v-text-field>
+                            </template>
+                         </v-slider>
               </v-card-text>
             </v-card>
             <br>
@@ -153,7 +111,7 @@
             <br>
           </v-window-item>
 
-        <v-window-item value="option-2" :transition="false" :reverse-transition="false">
+        <v-window-item value="option-2">
           <v-card flat>
             <v-card-text>
               <p style="font-size: 20px">Please enter <b>healthy</b>  patient vitals: </p>
@@ -188,48 +146,9 @@
                 required
               ></v-text-field>
 
-              <!-- <v-text-field
-                v-model="patient_vitals['cardiac_output']"
-                label="Cardiac Output (L/min)"
-              ></v-text-field>
-
-              <v-text-field
-                v-model="patient_vitals['central_venous_pressure']"
-                label="Central Venous Pressure (mmHg)"
-              ></v-text-field>
-
-              <v-text-field
-              v-model="patient_vitals['tidal_volume']"
-                label="Tidal Volume (mL)"
-              ></v-text-field>
-              
-              <v-text-field
-              v-model="patient_vitals['oxy_saturation']"
-                label="Oxygen Saturation"
-              ></v-text-field> -->
-              
-              <!-- <v-slider
-                v-model="patient_vitals['core_temperature']"
-                label="Core Temperature (degC)"
-                class="align-center"
-                :max="core_temp_max"
-                :min="core_temp_min"
-                :step="0.1"
-              ><template v-slot:append>
-                  <v-text-field
-                    v-model="patient_vitals['core_temperature']"
-                    hide-details
-                    single-line
-                    density="compact"
-                    type="number"
-                    style="width: 90px"
-                  ></v-text-field>
-                </template>
-              </v-slider> -->
-
               <v-slider
                 v-model="patient_vitals['HeartRateBaseline']"
-                label="Heart Rate (bpm)"
+                label="Heart Rate"
                 class="align-center"
                 :max="heart_rate_max"
                 :min="heart_rate_min"
@@ -237,17 +156,13 @@
               ><template v-slot:append>
                   <v-text-field
                     v-model="patient_vitals['HeartRateBaseline']"
-                    hide-details
-                    single-line
-                    density="compact"
-                    type="number"
-                    style="width: 90px"
+                    hide-details single-line density="compact" type="number" suffix="bpm" style="width: 180px"
                   ></v-text-field>
                 </template>
               </v-slider>
               <v-slider
                 v-model="patient_vitals['RespirationRateBaseline']"
-                label="Respiratory Rate (1/min)"
+                label="Respiratory Rate"
                 class="align-center"
                 :max="resp_rate_max"
                 :min="resp_rate_min"
@@ -256,11 +171,7 @@
                 <template v-slot:append>
                   <v-text-field
                     v-model="patient_vitals['RespirationRateBaseline']"
-                    hide-details
-                    single-line
-                    density="compact"
-                    type="number"
-                    style="width: 90px"
+                    hide-details single-line density="compact" type="number" suffix="/min" style="width: 180px"
                   ></v-text-field>
                 </template>
               </v-slider>
@@ -278,9 +189,15 @@
           <br>
         </v-window-item>
 
-        <v-window-item value="option-3" :transition="false" :reverse-transition="false">
+        <v-window-item value="option-3">
+          <v-card flat>
+            <v-card-text>
+            <p style="font-size: 20px">Please configure patient injuries and timeline:</p>
+            <br>
+            <br>
             <v-row>
               <v-col cols="12" sm="8" md="6" class="my-content">
+
                 <svg
                   width="550px"
                   height="600px"
@@ -347,10 +264,15 @@
               </v-col>
             </v-row>
 
-            <v-row class="justify-center">
-                <v-col cols="auto">
-                    <v-btn @click="nextTab('option-5')" density="compact" icon="mdi-arrow-left"></v-btn>
-                </v-col>
+            <v-slider v-model="action_time" label="Medical Responder Time to Scene" class="align-center" :max="time_max" :min="time_min" :step="0.5">
+                            <template v-slot:append>
+                              <v-text-field v-model="action_time" hide-details single-line density="compact" :items="time_units" style="width: 90px"></v-text-field>
+                               <v-select v-model="action_unit" hide-details single-line density="compact" :items="time_units" style="width: 90px"></v-select>
+                            </template>
+                         </v-slider>
+
+                <!-- <v-row>
+                <v-col cols="auto"> -->
                 <v-btn
                   :disabled="!valid"
                   color="success"
@@ -364,8 +286,18 @@
                   @click="reset"
                   >
                   Reset Form
-                </v-btn>   
-              </v-row>     
+                </v-btn>  
+              </v-card-text>
+              <!-- </v-col> 
+              </v-row> -->
+            </v-card>  
+            <br>
+            <v-row class="justify-center">
+                <v-col cols="auto">
+                    <v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-left"></v-btn>
+                </v-col>
+                </v-row>
+                <br>   
         </v-window-item>
       </v-form>
       </v-window>
@@ -391,6 +323,10 @@ import xmlbuilder from 'xmlbuilder'
       height_max: 200,
       weight_min: 0,
       weight_max: 200,
+      time_min: 0,
+      time_max: 60,
+      action_time: 0,
+      action_unit: 'min',
       med_options: ['A', 'B', 'C'],
       tab: 'home',
       name: [],
@@ -443,6 +379,11 @@ import xmlbuilder from 'xmlbuilder'
       rh: [
         'Positive',
         'Negative'
+      ],
+      time_units: [
+        's',
+        'min',
+        'hr'
       ]
     }),
     methods: {
