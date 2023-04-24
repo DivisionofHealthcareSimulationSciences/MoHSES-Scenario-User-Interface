@@ -277,6 +277,7 @@
                   :disabled="!valid"
                   color="success"
                   class="mr-4"
+                  @click="saveXML()"
                   >
                   Submit
                 </v-btn>
@@ -489,7 +490,7 @@ import xmlbuilder from 'xmlbuilder'
           link.download = 'data.xml'
           link.click()
         }
-      }, }
+    }, }
 
 /*       saveXML()
       const xml = xmlbuilder.create('Scenario', {
