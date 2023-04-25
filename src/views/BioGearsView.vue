@@ -305,7 +305,7 @@
                   :disabled="!valid"
                   color="success"
                   class="mr-4"
-                  @click="saveScenarioXML()"
+                  @click="saveBiogearsFiles()"
                   >
                   Submit
                 </v-btn>
@@ -474,7 +474,6 @@ import xmlbuilder from 'xmlbuilder'
           }
         },
 
-
         saveStateXML() {
           const xml = xmlbuilder.create('Patient', {
             encoding: 'UTF-8',
@@ -603,6 +602,11 @@ import xmlbuilder from 'xmlbuilder'
           link.href = URL.createObjectURL(blob)
           link.download = 'biogearsscenario.xml'
           link.click()
+        },
+
+        saveBiogearsFiles() {
+          this.saveStateXML()
+          this.saveScenarioXML()
         }
 
     }, 
