@@ -269,7 +269,7 @@
         <v-window-item value="option-3" :transition="false" :reverse-transition="false">
           <v-main>
             <v-row>
-              <v-col cols="12" sm="8" md="6" class="my-content">
+              <v-col> <!-- <v-col> cols="12" sm="8" md="6" class="my-content"> -->
                 <svg
                   width="550px"
                   height="600px"
@@ -320,18 +320,61 @@
               </v-col>
                 <!-- <div v-if="showTextBox"> -->
               <v-col>
-                <v-form
-                  ref="form"
-                  v-model="valid"
-                  lazy-validation
-                  >
-                    <v-combobox v-for="(item, index) in name"
-                      :key="index"
-                      :label="Object.keys(item)[0]"
-                      :items='patient_body[Object.keys(item)[0]]'
-                      v-model="item[Object.keys(item)[0]]" 
-                      multiple
-                      chips></v-combobox>
+                <v-form>
+                  <!-- <v-combobox
+                        label = 'Select Injury Type'
+                        :key="index"
+                        :items='patient_body[Object.keys(item)[0]]'
+                        v-model="item[Object.keys(item)[0]]" 
+                        multiple
+                        chips>
+                      </v-combobox> -->
+                  <v-dialog v-for="(item, index) in name"
+                    :key="index"
+                    :label="Object.keys(item)[0]"
+                    :items='patient_body[Object.keys(item)[0]]'
+                    v-model="item[Object.keys(item)[0]]"
+                    width=500
+                    >
+                    <v-card>
+                      <v-select 
+                        v-model="item.type" 
+                        label="Select Injury Type" 
+                        :items="patient_body[Object.keys(item)[0]]">
+                      </v-select>
+                      <v-row>
+                        <v-col>
+                          <v-select v-if="item.type==='Tension Pneumothorax'" v-model="item.side" label="Select side" :items="sides" style="width: 200px" class="align-left"></v-select>
+                        </v-col>
+                        <v-col>
+                          <v-select v-if="item.type==='Tension Pneumothorax'" v-model="item.openclose" label="Open or Closed" :items="open_closed" class="align-right" style="width: 200px"></v-select>
+                        </v-col>
+                      </v-row>
+                      <v-select v-if="item.type==='Hemorrhage'" v-model=item.compartment label="Select compartment" :items="hemorrhage_regions[item.region]"></v-select>
+                      <v-text-field v-if="item.type==='Hemorrhage'" v-model="item.hemrate" label="Initial Rate" suffix="mL/min"></v-text-field>
+                      <v-slider v-if="item.type!='Hemorrhage'" v-model="item.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
+                        <template v-slot:append>
+                          <v-text-field v-model="item.severity" hide-details single-line density="compact" style="width: 90px"></v-text-field>
+                        </template>
+                      </v-slider>
+                      <v-card-actions>
+                        <v-btn
+                          color="blue-darken-1"
+                          variant="text"
+                          @click="dialog = false"
+                        >
+                          Close
+                        </v-btn>
+                        <v-btn
+                          color="blue-darken-1"
+                          variant="text"
+                          @click="dialog = false"
+                        >
+                          Save
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-form>
               </v-col>
             </v-row>
@@ -381,20 +424,40 @@ import xmlbuilder from 'xmlbuilder'
       height_max: 200,
       weight_min: 0,
       weight_max: 200,
+      time_min: 0,
+      time_max: 60,
+      action_time: 0,
+      action_unit: 'min',
+      sev_min: 0,
+      sev_max: 1,
       med_options: ['A', 'B', 'C'],
       tab: 'home',
       name: [],
+      sides: ['Left', 'Right'],
+      open_closed: ['Open', 'Closed'],
       drawer: false,
       valid: true,
       expanded: [0],
-      capability: [
-        { required: [],
-          name: [],
-          data: [],
-          propertyName: [],
-          dataType: [],
-          value: [] },
+      action: [
+        { region: [],
+          type: [],
+          severity: 0.5,
+        },
       ],
+      // med_options: ['A', 'B', 'C'],
+      // tab: 'home',
+      // name: [],
+      // drawer: false,
+      // valid: true,
+      // expanded: [0],
+      // capability: [
+      //   { required: [],
+      //     name: [],
+      //     data: [],
+      //     propertyName: [],
+      //     dataType: [],
+      //     value: [] },
+      // ],
 
       patient_props: {
         "Name": [],
@@ -424,6 +487,21 @@ import xmlbuilder from 'xmlbuilder'
         'Pelvis':['Burn Wound'],
         'Extremities':['Burn Wound'],
       },
+      hemorrhage_regions: {
+        'Head': ['Brain'],
+        'Chest': ['Aorta', 'Myocardium', 'Vena Cava', 'Lung'],
+        'Abdomen': ['Spleen', 'Liver', 'LeftKidney', 'RightKidney', 'Splanchnic', 'SmallIntestine', 'LargeIntestine'],
+        'Extremities': ['LeftArm', 'RightArm', 'LeftLeg', 'RightLeg']
+      },
+      body_regions: [
+        'Head',
+        'Neck', 
+        'Chest', 
+        'Back',
+        'Abdomen', 
+        'Pelvis',
+        'Extremities']
+      ,
       blood_types: [
         'A',
         'B',
@@ -433,6 +511,11 @@ import xmlbuilder from 'xmlbuilder'
       rh: [
         'Positive',
         'Negative'
+      ],
+      time_units: [
+        's',
+        'min',
+        'hr'
       ]
     }),
     methods: {
@@ -441,6 +524,16 @@ import xmlbuilder from 'xmlbuilder'
         },
         removeCapability(index) {
           this.capability.splice(index, 1);
+        },
+        addAction() {
+          this.action.push({
+            region: '',
+            type: '',
+            severity: ''
+          });
+        },
+        removeAction(index) {
+          this.action.splice(index, 1);
         },
         validate() {
           this.$refs.form.validate()
