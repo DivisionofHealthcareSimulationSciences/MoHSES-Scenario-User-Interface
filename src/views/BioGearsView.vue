@@ -253,27 +253,26 @@
 
               <v-col>
                 <div v-for="(exp, index) in action" :key="index">
-                            <v-select v-model="exp.region" label="Select Body Region" :items="body_regions"></v-select>
-                            <v-autocomplete v-model="exp.type" label="Select Injury Type" :items="patient_body[exp.region]"></v-autocomplete>
-                            <v-row>
-                            <v-col>
-                            <v-select v-if="exp.type==='Tension Pneumothorax'" v-model="exp.side" label="Select side" :items="sides" style="width: 200px" class="align-left"></v-select>
-                          </v-col>
-                          <v-col>
-                            <v-select v-if="exp.type==='Tension Pneumothorax'" v-model="exp.openclose" label="Open or Closed" :items="open_closed" class="align-right" style="width: 200px"></v-select>
-                          </v-col>
-                          </v-row>
-                            <v-select v-if="exp.type==='Hemorrhage'" v-model=exp.compartment label="Select compartment" :items="hemorrhage_regions[exp.region]"></v-select>
-                            <v-text-field v-if="exp.type==='Hemorrhage'" v-model="exp.hemrate" label="Initial Rate" suffix="mL/min"></v-text-field>
-                            <v-slider v-if="exp.type!='Hemorrhage'" v-model="exp.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
-                            <template v-slot:append>
-                              <v-text-field v-model="exp.severity" hide-details single-line density="compact" style="width: 90px"></v-text-field>
-                            </template>
-                          </v-slider>
-                         </div>
-                         <v-btn @click="removeAction(-1)">Remove Injury</v-btn>
-                         <v-btn @click="addAction">Add Another Injury</v-btn>
-                          
+                  <v-select v-model="exp.region" label="Select Body Region" :items="body_regions"></v-select>
+                  <v-autocomplete v-model="exp.type" label="Select Injury Type" :items="patient_body[exp.region]"></v-autocomplete>
+                  <v-row>
+                    <v-col>
+                      <v-select v-if="exp.type==='Tension Pneumothorax'" v-model="exp.side" label="Select side" :items="sides" style="width: 200px" class="align-left"></v-select>
+                    </v-col>
+                    <v-col>
+                      <v-select v-if="exp.type==='Tension Pneumothorax'" v-model="exp.openclose" label="Open or Closed" :items="open_closed" class="align-right" style="width: 200px"></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-select v-if="exp.type==='Hemorrhage'" v-model=exp.compartment label="Select compartment" :items="hemorrhage_regions[exp.region]"></v-select>
+                  <v-text-field v-if="exp.type==='Hemorrhage'" v-model="exp.hemrate" label="Initial Rate" suffix="mL/min"></v-text-field>
+                  <v-slider v-if="exp.type!='Hemorrhage'" v-model="exp.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
+                    <template v-slot:append>
+                      <v-text-field v-model="exp.severity" hide-details single-line density="compact" style="width: 90px"></v-text-field>
+                    </template>
+                  </v-slider>
+                </div>
+                <v-btn @click="removeAction(-1)">Remove Injury</v-btn>
+                <v-btn @click="addAction">Add Another Injury</v-btn>
                 <v-form
                   ref="form"
                   v-model="valid"
