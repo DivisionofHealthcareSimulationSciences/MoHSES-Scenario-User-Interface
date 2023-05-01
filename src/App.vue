@@ -15,7 +15,6 @@
 
     <v-navigation-drawer
       v-model="drawer"
-      absolute
       bottom
       temporary
     >

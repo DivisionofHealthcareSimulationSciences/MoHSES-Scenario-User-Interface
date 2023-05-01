@@ -62,18 +62,18 @@
                      <v-card-text>
                         <p style="font-size: 20px">Please enter scenario properties:</p>
                         <br>
-                        <v-select v-model="patient_props['type']" :items="types" label="Instructor Type" required clearable></v-select>
-                        <v-text-field v-model="scenario_props['name']" label="Scenario Name" required clearable></v-text-field>
-                        <v-combobox v-model="scenario_props['authors']" label="Authors" required clearable multiple chips hint='Click "enter" to add multiple items'></v-combobox>
-                        <v-container>
-   <v-file-input
+                        <v-file-input
      label="Upload BioGears State File"
      v-model="state_file"
      @change="handleFileUpload"
-     accept=".xml"
    ></v-file-input>
    <v-btn color="primary" @click="parseXML">Parse State File</v-btn>
- </v-container>
+   <br>
+   <br>
+                        <v-select v-model="patient_props['type']" :items="types" label="Instructor Type" required clearable></v-select>
+                        <v-text-field v-model="scenario_props['name']" label="Scenario Name" required clearable></v-text-field>
+                        <v-combobox v-model="scenario_props['authors']" label="Authors" required clearable multiple chips hint='Click "enter" to add multiple items'></v-combobox>
+
                      </v-card-text>
                   </v-card>
                   <br>
@@ -315,7 +315,8 @@
    import xmlbuilder from 'xmlbuilder'
    export default {
      data: () => ({
-       state_file: '',
+       fileName: '',
+       state_file: null,
        dialog1: false,
        dialog: false,
        altitude_min: 0,
@@ -388,6 +389,66 @@
        types: ['Medical Doctor', 'Paramedic', 'Nurse'],
      }),
      methods: {
+      handleFileUpload(e) {
+      this.state_file = e.target.files[0];
+      this.fileName = this.state_file.name;
+    },
+    parseXML() {
+      if (!this.state_file) {
+        alert('Please upload an XML file first');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const xmlString = e.target.result;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+
+        // Assuming the XML structure is as follows:
+        // <root>
+        //   <Patient>
+        //     <Age>...</Age>
+        //     <Weight>...</Weight>
+        //   </Patient>
+        // </root>
+        const patient = xmlDoc.querySelector('Patient');
+        const name = patient.querySelector('Name').textContent;
+        const sex = patient.querySelector('Sex').textContent;
+        const age = patient.querySelector('Age').getAttribute('value');
+        const height = patient.querySelector('Height').getAttribute('value');
+        const weight = patient.querySelector('Weight').getAttribute('value');
+        const ambientTemperatureElement = xmlDoc.querySelector('AmbientTemperature');
+        const ambientTemperatureValue = ambientTemperatureElement.getAttribute('value');
+        const atmosphericPressureElement = xmlDoc.querySelector('AtmosphericPressure');
+        const atmosphericPressureValue = atmosphericPressureElement.getAttribute('value');
+        const carbonDioxideElement = xmlDoc.querySelector('AmbientGas[Name="CarbonDioxide"]');
+
+        // Access the FractionAmount element and its value attribute
+        const fractionAmountElement = carbonDioxideElement.querySelector('FractionAmount');
+        const fractionAmountValue = fractionAmountElement.getAttribute('value');
+
+        console.log('Fraction Amount:', fractionAmountValue);
+        console.log('Patient:', patient);
+        console.log('Name:', name);
+        console.log('sex:', sex);
+        console.log('Age:', age);
+        console.log('Height:', height);
+        console.log('Weight:', weight);
+        console.log('Ambient Temperature:', ambientTemperatureValue);
+        console.log('Ambient Pressure:', atmosphericPressureValue);
+        this.patient_props['name'] = name;
+        this.patient_props['age'] = age;
+        this.patient_props['gender'] = sex;
+        this.patient_props['height'] = height;
+        this.patient_props['weight'] = weight;
+        this.environment_props['co2'] = fractionAmountValue;
+        this.environment_props['temperature'] = ambientTemperatureValue;
+        this.environment_props['pressure'] = atmosphericPressureValue;
+        this.scenario_props['name'] = this.fileName;
+      };
+      reader.readAsText(this.state_file);
+    },
        addCapability() {
          this.capability.push({
            required: '',
