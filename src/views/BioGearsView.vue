@@ -1,6 +1,6 @@
 <template>
   <v-toolbar
-    color="#4b0082"
+    color="#3c2d70"
     style="color: white"
   >
     <v-toolbar-title>BioGears Scenario Creation Tool</v-toolbar-title>
@@ -8,7 +8,7 @@
     
   <!-- <v-row> -->
     <!-- <v-col cols="3"> -->
-      <v-tabs large v-model="tab" color="#4b0082">
+      <v-tabs large v-model="tab" color="#3c2d70">
         <v-tab value="home">
           <v-icon start>
             mdi-home
@@ -46,20 +46,47 @@
              <v-form ref="form" v-model="valid" lazy-validation>
                 <v-window-item value="home">
                    <v-card class="bg-grey-lighten-3" flat>
+                    <v-card-title class="text-center" style="font-size: 36px">Welcome to the BioGears Scenario Creation Tool!</v-card-title>
+                    
+                    <v-container fluid>
+      <v-row align="center" justify="center">
+        <v-col cols="12">
+          <v-img
+            src="@/assets/crest_vh_gold_purple_dt.png"
+            alt="Your image"
+            class="mx-auto"
+            width="80%"
+            height="80%"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+                    
+        
+                    
+                    
+                    
                     <v-card-text>
-                      <h1 style="font-size: 36px">Welcome to the BioGears Scenario Creation Tool!</h1>
-                      <br>
+                      
                       <p style="font-size: 14px">This tool is designed to simplify the process of generating BioGears Scenario XML files. First,
                       input patient information and healthy vitals to define a BioGears patient. Then configure injuries to define a specific patient
                     scenario and click Submit. This will locally download BioGears-compatible Patient and Scenario XML files, which can then be inputted into BioGears via
                   command line. After running BioGears with this file, user will have a MoHSES-compatible state file with data on the simulated injured patient's
                 vitals.</p>
                     </v-card-text>
-                    </v-card>
+                    
+                    
 
             <v-col cols="auto">
               <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
             </v-col>
+
+
+
+            </v-card>
+            <br>
+            <br>
+            <br>
           </v-window-item>
           
           <v-window-item value="option-1">
@@ -300,21 +327,69 @@
 
                 <!-- <v-row>
                 <v-col cols="auto"> -->
-                <v-btn
-                  :disabled="!valid"
-                  color="success"
-                  class="mr-4"
-                  @click="saveBiogearsFiles()"
-                  >
-                  Submit
-                </v-btn>
-                <v-btn
-                  color="error"
-                  class="mr-4"
-                  @click="reset"
-                  >
-                  Reset Form
-                </v-btn>  
+                  <v-dialog
+      v-model="dialog1"
+      persistent
+      width="auto"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          color="success"
+          v-bind="props"
+        >
+          Submit
+        </v-btn>
+      </template>
+      <v-card>
+        <v-card-title class="text-h5">
+          Submission Confirmation
+        </v-card-title>
+        <v-card-text>Are you sure you would like to submit your form?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green-darken-1"
+            variant="text"
+            @click="dialog1 = false"
+          >
+            Dismiss
+          </v-btn>
+          <v-btn :disabled="!valid" color="success" class="mr-4" @click="saveBiogearsFiles(); dialog1=false"> Submit </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-spacer></v-spacer>
+    <v-dialog
+      v-model="dialog"
+      persistent
+      width="auto"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          color="error"
+          v-bind="props"
+        >
+          Reset Form
+        </v-btn>
+      </template>
+      <v-card>
+        <v-card-title class="text-h5">
+          Reset Confirmation
+        </v-card-title>
+        <v-card-text>Are you sure you would like to reset your form?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green-darken-1"
+            variant="text"
+            @click="dialog = false"
+          >
+            Dismiss
+          </v-btn>
+          <v-btn color="error" class="mr-4" @click="reset(); dialog=false"> Reset Form </v-btn>
+          </v-card-actions>
+          </v-card>
+          </v-dialog>
               </v-card-text>
               <!-- </v-col> 
               </v-row> -->
@@ -339,6 +414,8 @@
 import xmlbuilder from 'xmlbuilder'
   export default {
     data: () => ({
+      dialog1: null,
+      dialog: null,
       age_min: 0,
       age_max: 120,
       core_temp_min: 0,
