@@ -190,10 +190,10 @@
                   <v-select v-if="exp.dataType==='boolean'" :items="['true', 'false']" clearable v-model="exp.value" label="Value"></v-select>
                   <v-text-field v-if="exp.dataType==='number'" clearable v-model="exp.value" label="Value"></v-text-field>
                   <v-text-field v-if="exp.dataType==='option'" clearable v-model="exp.value" label="Value"></v-text-field>
-									<v-btn @click="removeCapability(index)">Remove Capability</v-btn>
+									<v-btn color="#ab51c4" style="color: white" @click="removeCapability(index)">Remove Capability</v-btn>
 									<br>
 									<br> </div>
-								<v-btn @click="addCapability">Add Capability</v-btn>
+								<v-btn color="#3c2d70" style="color: white" @click="addCapability">Add Capability</v-btn>
 								<br>
 								<br>
 								<v-row>

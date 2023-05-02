@@ -201,8 +201,8 @@
 												</template>
 											</v-slider>
 										</div>
-										<v-btn @click="removeAction(-1)">Remove Injury</v-btn>
-										<v-btn @click="addAction">Add Another Injury</v-btn>
+										<v-btn color="#ab51c4" style="color: white" @click="removeAction(-1)">Remove Injury</v-btn>
+										<v-btn color="#3c2d70" style="color: white" @click="addAction">Add Another Injury</v-btn>
 										<v-form ref="form" v-model="valid" lazy-validation>
 											<v-combobox v-for="(item, index) in name" :key="index" :label="Object.keys(item)[0]" :items='patient_body[Object.keys(item)[0]]' v-model="item[Object.keys(item)[0]]" multiple chips></v-combobox>
 										</v-form>
