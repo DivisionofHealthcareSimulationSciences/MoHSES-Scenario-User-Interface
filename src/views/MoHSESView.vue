@@ -184,10 +184,12 @@
 								<div v-for="(exp, index) in capability" :key="index">
 									<v-checkbox-btn v-model="exp.required" label="Required"></v-checkbox-btn>
 									<v-text-field clearable v-model="exp.name" label="Capability Name"></v-text-field>
-									<v-text-field clearable v-model="exp.data" label="Configuration Data"></v-text-field>
 									<v-text-field clearable v-model="exp.propertyName" label="Property Name"></v-text-field>
 									<v-select clearable v-model="exp.dataType" label="Data Type" :items="['string', 'number', 'boolean', 'option']"></v-select>
-									<v-file-input clearable v-model="exp.value" label="Value"></v-file-input>
+									<v-file-input v-if="exp.dataType==='string'" clearable v-model="exp.value" label="Value"></v-file-input>
+                  <v-select v-if="exp.dataType==='boolean'" :items="['true', 'false']" clearable v-model="exp.value" label="Value"></v-select>
+                  <v-text-field v-if="exp.dataType==='number'" clearable v-model="exp.value" label="Value"></v-text-field>
+                  <v-text-field v-if="exp.dataType==='option'" clearable v-model="exp.value" label="Value"></v-text-field>
 									<v-btn @click="removeCapability(index)">Remove Capability</v-btn>
 									<br>
 									<br> </div>
@@ -274,7 +276,6 @@ export default {
 		capability: [{
 			required: [],
 			name: [],
-			data: [],
 			propertyName: [],
 			dataType: [],
 			value: []
@@ -357,15 +358,6 @@ export default {
 					// Access the FractionAmount element and its value attribute
 					const fractionAmountElement = carbonDioxideElement.querySelector('FractionAmount');
 					const fractionAmountValue = fractionAmountElement.getAttribute('value');
-					console.log('Fraction Amount:', fractionAmountValue);
-					console.log('Patient:', patient);
-					console.log('Name:', name);
-					console.log('sex:', sex);
-					console.log('Age:', age);
-					console.log('Height:', height);
-					console.log('Weight:', weight);
-					console.log('Ambient Temperature:', ambientTemperatureValue);
-					console.log('Ambient Pressure:', atmosphericPressureValue);
 					this.patient_props['name'] = name;
 					this.patient_props['age'] = age;
 					this.patient_props['gender'] = sex;
@@ -382,7 +374,6 @@ export default {
 				this.capability.push({
 					required: '',
 					name: '',
-					data: '',
 					propertyName: '',
 					dataType: '',
 					value: ''
@@ -476,18 +467,26 @@ export default {
 						}
 					}
 				}
+        const authors = Scenario.ele('authors');
+        for (var author in this.scenario_props['authors']) {
+          authors.text(this.scenario_props['authors'][author]);
+        }
 				const caps = Scenario.ele('capabilities')
 				for(var item4 in this.capability) {
-					const cap = caps.ele('capability')
-					const config_data = cap.ele('configuration_data')
+					const cap = caps.ele('capability');
+					const config_data = cap.ele('configuration_data');
+          const config_data_data = config_data.ele('data');
 					for(var key4 in this.capability[item4]) {
 						if(key4 == 'name') {
 							cap.att(key4, this.capability[item4][key4])
 						}
-						if(key4 == 'required') {
+						else if(key4 == 'required') {
 							cap.att(key4, this.capability[item4][key4])
+            }
+            else if (key4 == 'value' & this.capability[item4][key4] == "[object File]") {
+              config_data_data.att(key4, this.capability[item4][key4][0].name)
 						} else {
-							config_data.ele(key4, this.capability[item4][key4])
+							config_data_data.att(key4, this.capability[item4][key4])
 						}
 					}
 				}
