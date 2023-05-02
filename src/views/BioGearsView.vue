@@ -60,20 +60,72 @@
           />
         </v-col>
       </v-row>
-    </v-container>
-                    
-        
-                    
-                    
-                    
+    </v-container>               
                     <v-card-text>
                       
                       <p style="font-size: 14px">This tool is designed to simplify the process of generating BioGears Scenario XML files. First,
                       input patient information and healthy vitals to define a BioGears patient. Then configure injuries to define a specific patient
                     scenario and click Submit. This will locally download BioGears-compatible Patient and Scenario XML files, which can then be inputted into BioGears via
-                  command line. After running BioGears with this file, user will have a MoHSES-compatible state file with data on the simulated injured patient's
+                  command line (detailed instructions in BioGears Guide below). After running BioGears with this file, user will have a MoHSES-compatible state file with data on the simulated injured patient's
                 vitals.</p>
-                    </v-card-text>
+                </v-card-text>
+                <v-card flat>
+                <v-card-text>
+      
+            <div class="text-h4">BioGears Guide</div>
+            <p>After generating the Custom Patient and Scenario files using the BioGears Scenario Creation Tool tab, users must run BioGears with the files in order to generate
+              a MoHSES-compatible state file. The following are instructions on how to run BioGears:
+            </p>
+            <v-list>
+              <v-list-item > <v-list-item-title style="font-size: 21px">1. Build BioGears</v-list-item-title>Create a folder in your Desktop titled 'biogears'. In the command line, navigate to this folder. Clone the BioGears <a href="https://github.com/BioGearsEngine/core">codebase</a> to your local computer by running:
+                <pre>git clone https://github.com/BioGearsEngine/core.git </pre> in command line.
+                Follow the build instructions from the <a href="https://github.com/BioGearsEngine/core/wiki/Build-Instructions">Github Wiki</a> for your operating system (also described below).
+               
+                <br>
+                <br>
+                <b>For MacOS (M1/M2 chip): </b><br>
+                Install Homebrew using by running: <pre>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" </pre> in command line.
+                Add Homebrew to path using: <pre>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile </pre>
+                <pre>eval "$(/opt/homebrew/bin/brew shellenv)"  </pre>
+                Install dependencies using:
+ <pre>  brew install wget
+  brew install git
+  brew install ninja
+  brew  install g++
+  brew  install gcc
+  brew  install eigen
+  brew  install xerces-c
+  brew  install xsd
+  brew install cmake
+</pre>
+              Assuming the BioGears repository was cloned in the biogears folder on Desktop, run the following commands to build BioGears:
+              <pre>
+  cd ~/Desktop/biogears
+  cd core
+  mkdir build; cd build
+  cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=~/Desktop/BiogearsInstall -DBiogears_BUILD_HOWTOS=ON ..
+  ninja bg-cli
+              </pre>
+      <b>For Windows:</b> <br>
+      put instructions here
+              </v-list-item>
+              <v-list-item> <v-list-item-title style="font-size: 21px">2. Move downloaded files to proper directories</v-list-item-title> After clicking Submit in the BioGears Scenario Creation Tool tab, two files should be downloaded - CustomScenario.xml and CustomPatient.xml.
+                Within the BioGears directory folder, move CustomScenario.xml to the <i>core/build/runtime/Scenarios/Patient</i> folder. Also within the BioGears directory folder,
+                move CustomPatient.xml to the <i>core/build/runtime/patients</i> folder.
+              </v-list-item>
+
+              <v-list-item> <v-list-item-title style="font-size: 21px">3. Run BioGears executable in command line</v-list-item-title>Open command line and within the BioGears directory, navigate to <i>core/build/runtime</i>. 
+                Run the BioGears executable by running this command: <br> <pre>../outputs/Release/bin/bg-cli SCENARIO ./Scenarios/Patient/CustomScenario.xml </pre>
+                
+                This may take a couple minutes to run. After BioGears has finished running, within the <i>Scenarios/Patient folder</i>, there should be CustomScenario.log and CustomScenario.csv files.
+                The csv file can be inputted into the BioGears Plotting Tool Tab to visualize the simulated physiological variables over time. 
+                <br>
+                Most importantly, under the <i>core/build/runtime/states</i> folder, a new file called CustomBioGearsState.xml will be created, which is the MoHSES-compatible state file 
+                that can be used to generate the MoHSES Scenario file.
+              </v-list-item>
+            </v-list>
+             </v-card-text>
+            </v-card>
                     
                     
 
@@ -116,12 +168,14 @@
                          </v-slider>
                          <v-slider v-model="patient_props['height']" label="Height" class="align-center" :max="height_max" :min="height_min" :step="0.1">
                             <template v-slot:append>
-                               <v-text-field v-model="patient_props['height']" hide-details single-line density="compact" type="number" suffix="cm" style="width: 180px"></v-text-field>
+                               <v-text-field v-model="patient_props['height']" hide-details single-line density="compact" type="number" style="width: 90px"></v-text-field>
+                               <v-select v-model="height_unit" hide-details single-line density="compact" :items="height_units" style="width: 90px"></v-select>
                             </template>
                          </v-slider>
                          <v-slider v-model="patient_props['weight']" label="Weight" class="align-center" :max="weight_max" :min="weight_min" :step="0.1">
                             <template v-slot:append>
-                               <v-text-field v-model="patient_props['weight']" hide-details single-line density="compact" type="number" suffix="kg" style="width: 180px"></v-text-field>
+                               <v-text-field v-model="patient_props['weight']" hide-details single-line density="compact" type="number" style="width: 90px"></v-text-field>
+                               <v-select v-model="weight_unit" hide-details single-line density="compact" :items="weight_units" style="width: 90px"></v-select>
                             </template>
                          </v-slider>
               </v-card-text>
@@ -160,17 +214,19 @@
                 v-model="patient_vitals['mean_arterial_pressure']"
                 label="Mean Arterial Pressure (mmHg)"
               ></v-text-field> -->
-
-              <v-text-field
-                v-model="patient_vitals['SystolicArterialPressureBaseline']"
-                label="Systolic Arterial Pressure (mmHg)"
-                required
-              ></v-text-field>
               
               <v-text-field
                 v-model="patient_vitals['DiastolicArterialPressureBaseline']"
                 label="Diastolic Arterial Pressure (mmHg)"
                 required
+                hint="Maximum is 80 mmHg"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="patient_vitals['SystolicArterialPressureBaseline']"
+                label="Systolic Arterial Pressure (mmHg)"
+                required
+                hint="Maximum is 120 mmHg"
               ></v-text-field>
 
               <v-slider
@@ -202,6 +258,9 @@
                   ></v-text-field>
                 </template>
               </v-slider>
+
+
+
             </v-card-text> 
           </v-card>
           <br>
@@ -292,7 +351,9 @@
                   </v-row>
                   <v-select v-if="exp.type==='Hemorrhage'" v-model=exp.compartment label="Select compartment" :items="hemorrhage_regions[exp.region]"></v-select>
                   <v-text-field v-if="exp.type==='Hemorrhage'" v-model="exp.hemrate" label="Initial Rate" suffix="mL/min"></v-text-field>
-                  <v-slider v-if="exp.type!='Hemorrhage'" v-model="exp.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
+                  <v-select v-if="exp.type==='Brain Injury'" v-model=exp.braininjurytype label="Select type" :items="brain_injury_types"></v-select>
+                  <v-text-field v-if="exp.type==='Burn Wound'" v-model=exp.burnsurfacearea label="Enter Fraction of Total Body Surface Area Affected" hint="Enter a decimal between 0 and 1."></v-text-field>
+                  <v-slider v-if="(exp.type!='Hemorrhage') && (exp.type!='Burn Wound')" v-model="exp.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
                     <template v-slot:append>
                       <v-text-field v-model="exp.severity" hide-details single-line density="compact" style="width: 90px"></v-text-field>
                     </template>
@@ -323,7 +384,7 @@
                               <v-select v-model="action_unit" hide-details single-line density="compact" :items="time_units" style="width: 90px"></v-select>
                             </template>
                          </v-slider>
-                         
+        
 
                 <!-- <v-row>
                 <v-col cols="auto"> -->
@@ -426,8 +487,12 @@ import xmlbuilder from 'xmlbuilder'
       resp_rate_max: 200,
       height_min: 0,
       height_max: 200,
+      height_units: ['cm', 'in'],
+      height_unit: 'in',
       weight_min: 0,
       weight_max: 200,
+      weight_units: ['kg', 'lb'],
+      weight_unit: 'lb',
       time_min: 0,
       time_max: 60,
       action_time: 0,
@@ -442,6 +507,7 @@ import xmlbuilder from 'xmlbuilder'
       drawer: false,
       valid: true,
       expanded: [0],
+      scenario_file_name: [],
       action: [
         { region: [],
           type: [],
@@ -453,16 +519,17 @@ import xmlbuilder from 'xmlbuilder'
         "Name": [],
         "Sex": [],
         "age": 50,
-        "weight": 75,
-        "height": 150
+        "weight": 150,
+        "height": 68
+        
       },
       patient_vitals: {
         "BloodTypeABO": [],
         "BloodTypeRh": [],
         "DiastolicArterialPressureBaseline": [],
-        "SystolicArterialPressureBaseline":[],
         "HeartRateBaseline": 60,
-        "RespirationRateBaseline": 14
+        "RespirationRateBaseline": 14,
+        "SystolicArterialPressureBaseline":[]
       },
 
       scenario_props: {
@@ -475,9 +542,9 @@ import xmlbuilder from 'xmlbuilder'
         'Female'
       ],
       patient_body: {
-        'Head':['Hemorrhage', 'Brain Injury', 'Burn Wound'],
-        'Neck':['Sprain', 'Burn Wound'], 
-        'Chest':['Asthma', 'Heart Attack', 'Cardiac Arrest', 'Tension Pneumothorax', 'Burn Wound', 'Hemorrhage'], 
+        'Head':['Hemorrhage', 'Brain Injury', 'Acute Stress', 'Burn Wound'],
+        'Neck':['Airway Obstruction', 'Apnea', 'Burn Wound'], 
+        'Chest':['Asthma Attack', 'Acute Respiratory Distress', 'Bronchoconstriction', 'Tension Pneumothorax', 'Burn Wound', 'Hemorrhage'], 
         'Back':['Burn Wound'],
         'Abdomen':['Burn Wound'], 
         'Pelvis':['Burn Wound'],
@@ -489,6 +556,11 @@ import xmlbuilder from 'xmlbuilder'
         'Abdomen': ['Spleen', 'Liver', 'LeftKidney', 'RightKidney', 'Splanchnic', 'SmallIntestine', 'LargeIntestine'],
         'Extremities': ['LeftArm', 'RightArm', 'LeftLeg', 'RightLeg']
     },
+    brain_injury_types: [
+      'Diffuse',
+      'LeftFocal',
+      'RightFocal'
+    ],
       body_regions: [
         'Head',
         'Neck', 
@@ -553,7 +625,7 @@ import xmlbuilder from 'xmlbuilder'
         saveStateXML() {
           const xml = xmlbuilder.create('Patient', {
             encoding: 'UTF-8',
-            standalone: "yes"
+            standalone: "no"
           })
           xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel", 'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
           'contentVersion':"BioGears_7.5"})
@@ -561,18 +633,21 @@ import xmlbuilder from 'xmlbuilder'
           for (var key1 in this.patient_props) {
             if (key1 == 'age') {
               const Age = xml.ele('Age')
+              Age.att('readOnly', 'false')
               Age.att('value', this.patient_props[key1])
-              Age.att('units', 'yr')
+              Age.att('unit', 'yr')
             }
             else if (key1 == 'height') {
               const Height = xml.ele('Height')
+              Height.att('readOnly', 'false')
               Height.att('value', this.patient_props[key1])
-              Height.att('units', '')
+              Height.att('unit', this.height_unit)
             }
             else if (key1 == 'weight') {
               const Weight = xml.ele('Weight')
+              Weight.att('readOnly', 'false')
               Weight.att('value', this.patient_props[key1])
-              Weight.att('units', 'kg')
+              Weight.att('unit', this.weight_unit)
             }
             else {
               xml.ele(key1, this.patient_props[key1])
@@ -590,23 +665,27 @@ import xmlbuilder from 'xmlbuilder'
             }
             else if (key2 == 'DiastolicArterialPressureBaseline') {
               const DiastolicArterialPressureBaseline = xml.ele('DiastolicArterialPressureBaseline')
+              DiastolicArterialPressureBaseline.att('readOnly', 'false')
               DiastolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-              DiastolicArterialPressureBaseline.att('units', 'mmHg')
-            }
-            else if (key2 == 'SystolicArterialPressureBaseline') {
-              const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
-              SystolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-              SystolicArterialPressureBaseline.att('units', 'mmHg')
+              DiastolicArterialPressureBaseline.att('unit', 'mmHg')
             }
             else if (key2 == 'HeartRateBaseline') {
               const HeartRate = xml.ele('HeartRateBaseline')
+              HeartRate.att('readOnly', 'false')
               HeartRate.att('value', this.patient_vitals[key2])
-              HeartRate.att('units', '1/min')
+              HeartRate.att('unit', '1/min')
             }
             else if (key2 == 'RespirationRateBaseline') {
               const RespRate = xml.ele('RespirationRateBaseline')
+              RespRate.att('readOnly', 'false')
               RespRate.att('value', this.patient_vitals[key2])
-              RespRate.att('units', '1/min')
+              RespRate.att('unit', '1/min')
+            }
+            else if (key2 == 'SystolicArterialPressureBaseline') {
+              const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
+              SystolicArterialPressureBaseline.att('readOnly', 'false')
+              SystolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
+              SystolicArterialPressureBaseline.att('unit', 'mmHg')
             }
             else {
               xml.ele(key2, this.patient_vitals[key2])
@@ -621,7 +700,7 @@ import xmlbuilder from 'xmlbuilder'
           })
           const link = document.createElement('a')
           link.href = URL.createObjectURL(blob)
-          link.download = 'patientdata.xml'
+          link.download = 'CustomPatient.xml'
           link.click()
         },
 
@@ -637,7 +716,7 @@ import xmlbuilder from 'xmlbuilder'
             xml.ele(key1, this.scenario_props[key1])
           }
           const InitialParams = xml.ele('InitialParameters')
-          InitialParams.ele('PatientFile', 'patientdata.xml')
+          InitialParams.ele('PatientFile', 'CustomPatient.xml')
 
 
           const data_req = xml.ele('DataRequests')
@@ -710,8 +789,19 @@ import xmlbuilder from 'xmlbuilder'
               initrate.att('value', this.action[item2]['hemrate'])
               initrate.att('unit', 'mL/min')
             }
+            else if (this.action[item2]['type'] == 'Brain Injury') {
+              act.att('xsi:type', 'BrainInjuryData')
+              act.att('Type', this.action[item2]['braininjurytype'])
+              const sev = act.ele('Severity')
+              sev.att('value', this.action[item2]['severity'])
+            }
+            else if (this.action[item2]['type'] == 'Burn Wound') {
+              act.att('xsi:type', 'BurnWoundData')
+              const area = act.ele('TotalBodySurfaceArea')
+              area.att('value', this.action[item2]['burnsurfacearea'])
+            }
             else {
-            act.att('xsi:type', this.action[item2]['type'])
+            act.att('xsi:type', this.action[item2]['type'].replace(/\s/g, "").concat("Data"))
             const sev = act.ele('Severity')
             sev.att('value', this.action[item2]['severity']) 
             }
@@ -722,6 +812,11 @@ import xmlbuilder from 'xmlbuilder'
             time.att('value', this.action_time)
             time.att('unit', this.action_unit)
 
+          const save_file = xml.ele('Action')
+            save_file.att('xsi:type', 'SerializeStateData')
+            save_file.att('Type', 'Save')
+            save_file.ele('Filename', './CustomBioGearsState.xml')
+
           var xmlString = xml.end({
             pretty: true
           });
@@ -730,7 +825,7 @@ import xmlbuilder from 'xmlbuilder'
           })
           const link = document.createElement('a')
           link.href = URL.createObjectURL(blob)
-          link.download = 'biogearsscenario.xml'
+          link.download = 'CustomScenario.xml'
           link.click()
         },
 
