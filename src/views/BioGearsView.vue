@@ -569,6 +569,11 @@ export default {
 				try {
 					const response = await fetch(`http://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${this.lat},${this.lon}&dt=${this.date}`);
 					const data = await response.json();
+					// Extract location information
+					const location = data.location;
+					const cityName = location.name;
+					console.log(`City: ${cityName}`);
+					console.log(data);
 					if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
 						const weatherData = data.forecast.forecastday[0].day;
 						const temperature = weatherData.avgtemp_f;
