@@ -219,14 +219,14 @@
                 v-model="patient_vitals['DiastolicArterialPressureBaseline']"
                 label="Diastolic Arterial Pressure (mmHg)"
                 required
-                hint="Maximum is 80 mmHg"
+                hint="Enter value between 60-80 mmHg"
               ></v-text-field>
 
               <v-text-field
                 v-model="patient_vitals['SystolicArterialPressureBaseline']"
                 label="Systolic Arterial Pressure (mmHg)"
                 required
-                hint="Maximum is 120 mmHg"
+                hint="Enter value between 90-120 mmHg"
               ></v-text-field>
 
               <v-slider
@@ -353,7 +353,7 @@
                   <v-text-field v-if="exp.type==='Hemorrhage'" v-model="exp.hemrate" label="Initial Rate" suffix="mL/min"></v-text-field>
                   <v-select v-if="exp.type==='Brain Injury'" v-model=exp.braininjurytype label="Select type" :items="brain_injury_types"></v-select>
                   <v-text-field v-if="exp.type==='Burn Wound'" v-model=exp.burnsurfacearea label="Enter Fraction of Total Body Surface Area Affected" hint="Enter a decimal between 0 and 1."></v-text-field>
-                  <v-slider v-if="(exp.type!='Hemorrhage') && (exp.type!='Burn Wound')" v-model="exp.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
+                  <v-slider v-if="(exp.type!='Hemorrhage') && (exp.type!='Burn Wound') && (exp.type!='Cardiac Arrest')" v-model="exp.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
                     <template v-slot:append>
                       <v-text-field v-model="exp.severity" hide-details single-line density="compact" style="width: 90px"></v-text-field>
                     </template>
@@ -477,22 +477,22 @@ import xmlbuilder from 'xmlbuilder'
     data: () => ({
       dialog1: null,
       dialog: null,
-      age_min: 0,
-      age_max: 120,
+      age_min: 18,
+      age_max: 65,
       core_temp_min: 0,
       core_temp_max: 70,
-      heart_rate_min: 0,
-      heart_rate_max: 350,
-      resp_rate_min: 0,
-      resp_rate_max: 200,
-      height_min: 0,
-      height_max: 200,
+      heart_rate_min: 50,
+      heart_rate_max: 109,
+      resp_rate_min: 12,
+      resp_rate_max: 20,
+      height_min: 55,
+      height_max: 190,
       height_units: ['cm', 'in'],
-      height_unit: 'in',
-      weight_min: 0,
-      weight_max: 200,
+      height_unit: 'cm',
+      weight_min: 20,
+      weight_max: 250,
       weight_units: ['kg', 'lb'],
-      weight_unit: 'lb',
+      weight_unit: 'kg',
       time_min: 0,
       time_max: 60,
       action_time: 0,
@@ -511,23 +511,22 @@ import xmlbuilder from 'xmlbuilder'
       action: [
         { region: [],
           type: [],
-          severity: 0.5,
         },
       ],
 
       patient_props: {
         "Name": [],
         "Sex": [],
-        "age": 50,
-        "weight": 150,
-        "height": 68
+        "age": 44,
+        "weight": 65,
+        "height": 170
         
       },
       patient_vitals: {
-        "BloodTypeABO": [],
-        "BloodTypeRh": [],
+        "BloodTypeABO": 'AB',
+        "BloodTypeRh": 'Positive',
         "DiastolicArterialPressureBaseline": [],
-        "HeartRateBaseline": 60,
+        "HeartRateBaseline": 72,
         "RespirationRateBaseline": 14,
         "SystolicArterialPressureBaseline":[]
       },
@@ -544,7 +543,7 @@ import xmlbuilder from 'xmlbuilder'
       patient_body: {
         'Head':['Hemorrhage', 'Brain Injury', 'Acute Stress', 'Burn Wound'],
         'Neck':['Airway Obstruction', 'Apnea', 'Burn Wound'], 
-        'Chest':['Asthma Attack', 'Acute Respiratory Distress', 'Bronchoconstriction', 'Tension Pneumothorax', 'Burn Wound', 'Hemorrhage'], 
+        'Chest':['Asthma Attack', 'Acute Respiratory Distress', 'Bronchoconstriction', 'Cardiac Arrest', 'Tension Pneumothorax', 'Burn Wound', 'Hemorrhage'], 
         'Back':['Burn Wound'],
         'Abdomen':['Burn Wound'], 
         'Pelvis':['Burn Wound'],
@@ -799,6 +798,10 @@ import xmlbuilder from 'xmlbuilder'
               act.att('xsi:type', 'BurnWoundData')
               const area = act.ele('TotalBodySurfaceArea')
               area.att('value', this.action[item2]['burnsurfacearea'])
+            }
+			else if (this.action[item2]['type'] == 'Cardiac Arrest') {
+              act.att('xsi:type', 'CardiacArrestData')
+              act.att('State', 'On')
             }
             else {
             act.att('xsi:type', this.action[item2]['type'].replace(/\s/g, "").concat("Data"))
