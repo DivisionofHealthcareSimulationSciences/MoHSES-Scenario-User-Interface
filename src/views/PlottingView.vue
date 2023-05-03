@@ -5,16 +5,21 @@
 	<v-main class="bg-grey-lighten-3">
 		<v-container>
 			<v-card class="mt-n12">
+				<br>
 				<v-card-title class="text-center" style="font-size: 36px">Welcome to the BioGears Plotting Tool!</v-card-title>
 				<v-card-text>
 					<br>
 					<p style="font-size: 20px">Please upload a simulation .CSV to visualize your results:</p>
 					<br>
 					<v-file-input v-model="chosenFile"></v-file-input>
+					<v-row>
+					<v-col cols="2">
 					<v-btn style="color: white" color="#3c2d70" @click="importFile">Import File</v-btn>
-					<br>
-					<br>
+					</v-col>
+					<v-col cols="10">
 					<v-select v-if="array2D" label="Please select a variable to plot." v-model="selectPlot" id="selectButton" :items="allGroup.slice(1)"></v-select>
+					</v-col>
+					</v-row>
 					<v-row>
 						<v-col cols="auto" class="mr-2">
 							<v-btn style="color: white" color="#3c2d70" v-if="selectPlot" @click="plotSelectedChart">Plot Chart</v-btn>

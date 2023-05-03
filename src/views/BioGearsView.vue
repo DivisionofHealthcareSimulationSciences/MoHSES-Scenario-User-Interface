@@ -10,6 +10,8 @@
 		<v-tab value="option-2">
 			<v-icon start> mdi-access-point </v-icon> Patient Vitals </v-tab>
 		<v-tab value="option-3">
+			<v-icon start> mdi-access-point </v-icon> Environment Properties </v-tab>
+		<v-tab value="option-4">
 			<v-icon start> mdi-list-status </v-icon> Configure Patient Scenario </v-tab>
 	</v-tabs>
 	<v-main class="bg-grey-lighten-3">
@@ -133,12 +135,6 @@
 							<v-card-text>
 								<p style="font-size: 20px">Please enter <b>healthy</b> patient vitals: </p>
 								<br>
-								<v-text-field v-model="date" type="date" label="Date"></v-text-field>
-								<v-text-field v-model="lat" label="Latitude"></v-text-field>
-								<v-text-field v-model="lon" label="Longitude"></v-text-field>
-								<v-btn @click="pullEnvironmentData" color="error" label="Environment Data">Environment Data</v-btn>
-								<br>
-								<br>
 								<v-select v-model="patient_vitals['BloodTypeABO']" :items="blood_types" label="Blood Type"></v-select>
 								<v-select v-model="patient_vitals['BloodTypeRh']" :items="rh" label="Rh"></v-select>
 								<v-text-field v-model="patient_vitals['SystolicArterialPressureBaseline']" label="Systolic Arterial Pressure (mmHg)"></v-text-field>
@@ -165,7 +161,61 @@
 							</v-col>
 						</v-row>
 						<br> </v-window-item>
-					<v-window-item value="option-3">
+						<v-window-item value="option-3">
+						<v-card flat>
+							<v-card-text>
+								<p style="font-size: 20px"><b>Optional:</b> Please enter environment properties: </p>
+								<br>
+								<v-text-field v-model="date" type="date" label="Date"></v-text-field>
+								<v-row>
+									<v-col cols="6">
+									<v-text-field v-model="lat" label="Latitude"></v-text-field>
+									</v-col>
+									<v-col cols="6">
+									<v-text-field v-model="lon" label="Longitude"></v-text-field>
+									</v-col>
+								</v-row>
+								<v-btn @click="pullEnvironmentData" color="#3c2d70" style="color: white">Generate Environment Data</v-btn>
+								<br>
+								<br>
+								<v-slider v-if="weatherData" v-model="environment_props['temperature']" label="Temperature" clearable class="align-center" :max="temperature_max" :min="temperature_min" :step="0.1">
+									<template v-slot:append>
+										<v-text-field v-model="environment_props['temperature']" hide-details clearable single-line density="compact" type="number" suffix="Celsius" style="width: 180px"></v-text-field>
+									</template>
+								</v-slider>
+								<v-slider v-if="weatherData" v-model="environment_props['pressure']" label="Pressure" clearable class="align-center" :max="pressure_max" :min="pressure_min" :step="0.1">
+									<template v-slot:append>
+										<v-text-field v-model="environment_props['pressure']" hide-details clearable single-line density="compact" type="number" suffix="mmHg" style="width: 180px"></v-text-field>
+									</template>
+								</v-slider>
+								<v-slider v-if="weatherData" v-model="environment_props['humidity']" label="Relative Humidity" clearable class="align-center" :max="100" :min="0" :step="0.1">
+									<template v-slot:append>
+										<v-text-field v-model="environment_props['humidity']" hide-details clearable single-line density="compact" type="number" suffix="%" style="width: 180px"></v-text-field>
+									</template>
+								</v-slider>
+								<v-row>
+									<v-col cols="8">
+									<v-text-field v-if="weatherData" v-model="environment_props['cityName']" label="City"></v-text-field>
+									</v-col>
+									<v-col cols="4">
+									<v-text-field v-if="weatherData" v-model="environment_props['state']" label="State"></v-text-field>
+									</v-col>
+								</v-row>
+								<br>
+								<br>
+							</v-card-text>
+						</v-card>
+						<br>
+						<v-row justify="center">
+							<v-col cols="auto">
+								<v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-left"></v-btn>
+							</v-col>
+							<v-col cols="auto">
+								<v-btn @click="nextTab('option-4')" density="compact" icon="mdi-arrow-right"></v-btn>
+							</v-col>
+						</v-row>
+						<br> </v-window-item>
+					<v-window-item value="option-4">
 						<v-card flat>
 							<v-card-text>
 								<p style="font-size: 20px">Please enter a title and brief description for this patient scenario: </p>
@@ -260,7 +310,7 @@
 						<br>
 						<v-row class="justify-center">
 							<v-col cols="auto">
-								<v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-left"></v-btn>
+								<v-btn @click="nextTab('option-3')" density="compact" icon="mdi-arrow-left"></v-btn>
 							</v-col>
 						</v-row>
 						<br> </v-window-item>
@@ -273,6 +323,18 @@
 import xmlbuilder from 'xmlbuilder'
 export default {
 	data: () => ({
+		environment_props: {
+			"temperature": null,
+			"pressure": null,
+			"humidity": null,
+			"state": null,
+			"cityName": null,
+		},
+		temperature_min: 0,
+		temperature_max: 100,
+		pressure_min: 0,
+		pressure_max: 1000,
+		weatherData: null,
 		lat: null,
 		lon: null,
 		date: null,
@@ -563,31 +625,37 @@ export default {
 				this.saveScenarioXML()
 			},
 			async pullEnvironmentData() {
-				const fetch = require('node-fetch'); // Only needed in Node.js environment
-				var apiKey = '7a72fefa61ba4a84959231957230205'; // Replace with your Weather API key
-				console.log(this.date);
-				try {
-					const response = await fetch(`http://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${this.lat},${this.lon}&dt=${this.date}`);
-					const data = await response.json();
-					// Extract location information
-					const location = data.location;
-					const cityName = location.name;
-					console.log(`City: ${cityName}`);
-					console.log(data);
-					if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
-						const weatherData = data.forecast.forecastday[0].day;
-						const temperature = weatherData.avgtemp_f;
-						const humidity = weatherData.avghumidity;
-						console.log(`Temperature: ${temperature} °F`);
-						console.log(`Relative Humidity: ${humidity} %`);
-						console.log(weatherData);
-					} else {
-						console.log('No weather data found for the given location and date.');
-					}
-				} catch (error) {
-					console.error('Error fetching weather data:', error);
-				}
-  			},
+    const fetch = require('node-fetch'); // Only needed in Node.js environment
+    var apiKey = '7a72fefa61ba4a84959231957230205'; // Replace with your Weather API key
+    console.log(this.date);
+    try {
+        const response = await fetch(`http://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${this.lat},${this.lon}&dt=${this.date}`);
+        const data = await response.json();
+        // Extract location information
+        const location = data.location;
+        this.environment_props['cityName'] = location.name;
+		this.environment_props['state'] = location.region;
+        if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
+            this.weatherData = data.forecast.forecastday[0].day;
+            this.environment_props['temperature'] = this.weatherData.avgtemp_c;
+            this.environment_props['humidity'] = this.weatherData.avghumidity;
+            console.log(`Temperature: ${this.environment_props['temperature']} °C`);
+            console.log(`Relative Humidity: ${this.environment_props['humidity']} %`);
+            console.log(data.forecast.forecastday[0].hour)
+			// Calculate the sum of all pressure fields using the reduce() method
+			const sum = data.forecast.forecastday[0].hour.reduce((accumulator, currentObj) => {
+			return accumulator + currentObj.pressure_mb;
+			}, 0);
+			// Calculate the average by dividing the sum by the length of the dataArray
+			this.environment_props['pressure'] = sum / data.forecast.forecastday[0].hour.length / 1.33322;
+        } else {
+            console.log('No weather data found for the given location and date.');
+        }
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+    }
+},
+
 		},
 }
 </script>
