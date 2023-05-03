@@ -133,6 +133,12 @@
 							<v-card-text>
 								<p style="font-size: 20px">Please enter <b>healthy</b> patient vitals: </p>
 								<br>
+								<v-text-field v-model="date" type="date" label="Date"></v-text-field>
+								<v-text-field v-model="lat" label="Latitude"></v-text-field>
+								<v-text-field v-model="lon" label="Longitude"></v-text-field>
+								<v-btn @click="pullEnvironmentData" color="error" label="Environment Data">Environment Data</v-btn>
+								<br>
+								<br>
 								<v-select v-model="patient_vitals['BloodTypeABO']" :items="blood_types" label="Blood Type"></v-select>
 								<v-select v-model="patient_vitals['BloodTypeRh']" :items="rh" label="Rh"></v-select>
 								<v-text-field v-model="patient_vitals['SystolicArterialPressureBaseline']" label="Systolic Arterial Pressure (mmHg)"></v-text-field>
@@ -267,6 +273,9 @@
 import xmlbuilder from 'xmlbuilder'
 export default {
 	data: () => ({
+		lat: null,
+		lon: null,
+		date: null,
 		dialog1: null,
 		dialog: null,
 		age_min: 0,
@@ -552,8 +561,29 @@ export default {
 			saveBiogearsFiles() {
 				this.saveStateXML()
 				this.saveScenarioXML()
-			}
-	},
+			},
+			async pullEnvironmentData() {
+				const fetch = require('node-fetch'); // Only needed in Node.js environment
+				var apiKey = '7a72fefa61ba4a84959231957230205'; // Replace with your Weather API key
+				console.log(this.date);
+				try {
+					const response = await fetch(`http://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${this.lat},${this.lon}&dt=${this.date}`);
+					const data = await response.json();
+					if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
+						const weatherData = data.forecast.forecastday[0].day;
+						const temperature = weatherData.avgtemp_f;
+						const humidity = weatherData.avghumidity;
+						console.log(`Temperature: ${temperature} °F`);
+						console.log(`Relative Humidity: ${humidity} %`);
+						console.log(weatherData);
+					} else {
+						console.log('No weather data found for the given location and date.');
+					}
+				} catch (error) {
+					console.error('Error fetching weather data:', error);
+				}
+  			},
+		},
 }
 </script>
 <style>
