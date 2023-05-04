@@ -1,75 +1,36 @@
 <template>
-  <v-toolbar
-    color="#3c2d70"
-    style="color: white"
-  >
-    <v-toolbar-title>BioGears Scenario Creation Tool</v-toolbar-title>
-  </v-toolbar>
-    
-  <!-- <v-row> -->
-    <!-- <v-col cols="3"> -->
-      <v-tabs large v-model="tab" color="#3c2d70">
-        <v-tab value="home">
-          <v-icon start>
-            mdi-home
-          </v-icon>
-          About this page
-        </v-tab>
-        <v-tab value="option-1">
-          <v-icon start>
-            mdi-account
-          </v-icon>
-          Patient Information
-        </v-tab>
-        <v-tab value="option-2">
-          <v-icon start>
-            mdi-access-point
-          </v-icon>
-          Patient Vitals
-        </v-tab>
-        <v-tab value="option-3">
-          <v-icon start>
-            mdi-list-status
-          </v-icon>
-          Configure Patient Scenario
-        </v-tab>
-      </v-tabs>
-    <!-- </v-col> -->
-
-    <!-- <v-col cols="8" class="my-content">
-      <v-window v-model="tab">
-        <v-main> -->
-          <!-- <v-window-item value="home" :transition="false" :reverse-transition="false"> -->
-      <v-main class="bg-grey-lighten-3">
-       <v-container>
-          <v-window v-model="tab" class="mt-n12">
-             <v-form ref="form" v-model="valid" lazy-validation>
-                <v-window-item value="home">
-                   <v-card class="bg-grey-lighten-3" flat>
-                    <v-card-title class="text-center" style="font-size: 36px">Welcome to the BioGears Scenario Creation Tool!</v-card-title>
-                    
-                    <v-container fluid>
-      <v-row align="center" justify="center">
-        <v-col cols="12">
-          <v-img
-            src="@/assets/crest_vh_gold_purple_dt.png"
-            alt="Your image"
-            class="mx-auto"
-            width="80%"
-            height="80%"
-          />
-        </v-col>
-      </v-row>
-    </v-container>               
-                    <v-card-text>
-                      
-                      <p style="font-size: 14px">This tool is designed to simplify the process of generating BioGears Scenario XML files. First,
-                      input patient information and healthy vitals to define a BioGears patient. Then configure injuries to define a specific patient
-                    scenario and click Submit. This will locally download BioGears-compatible Patient and Scenario XML files, which can then be inputted into BioGears via
-                  command line (detailed instructions in BioGears Guide below). After running BioGears with this file, user will have a MoHSES-compatible state file with data on the simulated injured patient's
-                vitals.</p>
-                </v-card-text>
-                <v-card flat>
+	<v-toolbar color="#3c2d70" style="color: white">
+		<v-toolbar-title>BioGears Scenario Creation Tool</v-toolbar-title>
+	</v-toolbar>
+	<v-tabs large v-model="tab" color="#3c2d70">
+		<v-tab value="home">
+			<v-icon start> mdi-home </v-icon> About this page </v-tab>
+		<v-tab value="option-1">
+			<v-icon start> mdi-account </v-icon> Patient Information </v-tab>
+		<v-tab value="option-2">
+			<v-icon start> mdi-access-point </v-icon> Patient Vitals </v-tab>
+		<v-tab value="option-3">
+			<v-icon start> mdi-access-point </v-icon> Environment Properties </v-tab>
+		<v-tab value="option-4">
+			<v-icon start> mdi-list-status </v-icon> Configure Patient Scenario </v-tab>
+	</v-tabs>
+	<v-main class="bg-grey-lighten-3">
+		<v-container>
+			<v-window v-model="tab" class="mt-n12">
+				<v-form ref="form" v-model="valid" lazy-validation>
+					<v-window-item value="home">
+						<v-card class="bg-grey-lighten-3" flat>
+							<v-card-title class="text-center" style="font-size: 36px">Welcome to the BioGears Scenario Creation Tool!</v-card-title>
+							<v-container fluid>
+								<v-row align="center" justify="center">
+									<v-col cols="12">
+										<v-img src="@/assets/crest_vh_gold_purple_dt.png" alt="Your image" class="mx-auto" width="80%" height="80%" /> </v-col>
+								</v-row>
+							</v-container>
+							<v-card-text>
+								<p style="font-size: 14px">This tool is designed to simplify the process of generating BioGears Scenario XML files. First, input patient information and healthy vitals to define a BioGears patient. Then configure injuries to define a specific patient scenario and click Submit. This will locally download BioGears-compatible Patient and Scenario XML files, which can then be inputted into BioGears via command line. After running BioGears with this file, user will have a MoHSES-compatible state file with data on the simulated injured patient's vitals.</p>
+							</v-card-text>
+							<v-card flat>
                 <v-card-text>
       
             <div class="text-h4">BioGears Guide</div>
@@ -126,22 +87,14 @@
             </v-list>
              </v-card-text>
             </v-card>
-                    
-                    
-
-            <v-col cols="auto">
-              <v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
-            </v-col>
-
-
-
-            </v-card>
-            <br>
-            <br>
-            <br>
-          </v-window-item>
-          
-          <v-window-item value="option-1">
+							<v-col cols="auto">
+								<v-btn @click="nextTab('option-1')" density="compact" icon="mdi-arrow-right"></v-btn>
+							</v-col>
+						</v-card>
+						<br>
+						<br>
+						<br> </v-window-item>
+						<v-window-item value="option-1">
             <v-card flat>
               <v-card-text>
                 <p style="font-size: 20px">Please enter patient information:</p>
@@ -274,8 +227,61 @@
           </v-row>
           <br>
         </v-window-item>
-
-        <v-window-item value="option-3">
+								<v-window-item value="option-3">
+						<v-card flat>
+							<v-card-text>
+								<p style="font-size: 20px"><b>Optional:</b> Please enter environment properties: </p>
+								<br>
+								<v-text-field v-model="date" type="date" label="Date"></v-text-field>
+								<v-row>
+									<v-col cols="6">
+									<v-text-field v-model="lat" label="Latitude"></v-text-field>
+									</v-col>
+									<v-col cols="6">
+									<v-text-field v-model="lon" label="Longitude"></v-text-field>
+									</v-col>
+								</v-row>
+								<v-btn @click="pullEnvironmentData" color="#3c2d70" style="color: white">Generate Environment Data</v-btn>
+								<br>
+								<br>
+								<v-slider v-if="weatherData" v-model="environment_props['temperature']" label="Temperature" clearable class="align-center" :max="temperature_max" :min="temperature_min" :step="0.1">
+									<template v-slot:append>
+										<v-text-field v-model="environment_props['temperature']" hide-details clearable single-line density="compact" type="number" suffix="Celsius" style="width: 180px"></v-text-field>
+									</template>
+								</v-slider>
+								<v-slider v-if="weatherData" v-model="environment_props['pressure']" label="Pressure" clearable class="align-center" :max="pressure_max" :min="pressure_min" :step="0.1">
+									<template v-slot:append>
+										<v-text-field v-model="environment_props['pressure']" hide-details clearable single-line density="compact" type="number" suffix="mmHg" style="width: 180px"></v-text-field>
+									</template>
+								</v-slider>
+								<v-slider v-if="weatherData" v-model="environment_props['humidity']" label="Relative Humidity" clearable class="align-center" :max="100" :min="0" :step="0.1">
+									<template v-slot:append>
+										<v-text-field v-model="environment_props['humidity']" hide-details clearable single-line density="compact" type="number" suffix="%" style="width: 180px"></v-text-field>
+									</template>
+								</v-slider>
+								<v-row>
+									<v-col cols="8">
+									<v-text-field v-if="weatherData" v-model="environment_props['cityName']" label="City"></v-text-field>
+									</v-col>
+									<v-col cols="4">
+									<v-text-field v-if="weatherData" v-model="environment_props['state']" label="State"></v-text-field>
+									</v-col>
+								</v-row>
+								<br>
+								<br>
+							</v-card-text>
+						</v-card>
+						<br>
+						<v-row justify="center">
+							<v-col cols="auto">
+								<v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-left"></v-btn>
+							</v-col>
+							<v-col cols="auto">
+								<v-btn @click="nextTab('option-4')" density="compact" icon="mdi-arrow-right"></v-btn>
+							</v-col>
+						</v-row>
+						<br> </v-window-item>
+						<v-window-item value="option-4">
           <v-card flat>
             <v-card-text>
             <p style="font-size: 20px">Please enter a title and brief description for this patient scenario: </p>
@@ -458,26 +464,38 @@
             <br>
             <v-row class="justify-center">
                 <v-col cols="auto">
-                    <v-btn @click="nextTab('option-2')" density="compact" icon="mdi-arrow-left"></v-btn>
+                    <v-btn @click="nextTab('option-3')" density="compact" icon="mdi-arrow-left"></v-btn>
                 </v-col>
                 </v-row>
                 <br>   
         </v-window-item>
-      </v-form>
-      </v-window>
-    </v-container>
-  </v-main>
-
+				</v-form>
+			</v-window>
+		</v-container>
+	</v-main>
 </template>
-
-
 <script>
 import xmlbuilder from 'xmlbuilder'
-  export default {
-    data: () => ({
-      dialog1: null,
-      dialog: null,
-      age_min: 18,
+export default {
+	data: () => ({
+		environment_props: {
+			"temperature": null,
+			"pressure": null,
+			"humidity": null,
+			"state": null,
+			"cityName": null,
+		},
+		temperature_min: 0,
+		temperature_max: 100,
+		pressure_min: 0,
+		pressure_max: 1000,
+		weatherData: null,
+		lat: null,
+		lon: null,
+		date: null,
+		dialog1: null,
+		dialog: null,
+		age_min: 18,
       age_max: 65,
       core_temp_min: 0,
       core_temp_max: 70,
@@ -538,12 +556,10 @@ import xmlbuilder from 'xmlbuilder'
         "RespirationRateBaseline": 14,
         "SystolicArterialPressureBaseline":[]
       },
-
       scenario_props: {
         'Name': [],
         'Description': [],
       },
-
       genders: [
         'Male',
         'Female'
@@ -592,8 +608,8 @@ import xmlbuilder from 'xmlbuilder'
         'min',
         'hr'
       ]
-    }),
-    methods: {
+	}),
+	methods: {
 		changeColors() {
 			const selected_regions = []
 			for (var actions in this.action) {
@@ -857,28 +873,56 @@ import xmlbuilder from 'xmlbuilder'
         saveBiogearsFiles() {
           this.saveStateXML()
           this.saveScenarioXML()
+		},
+			async pullEnvironmentData() {
+    const fetch = require('node-fetch'); // Only needed in Node.js environment
+    var apiKey = '7a72fefa61ba4a84959231957230205'; // Replace with your Weather API key
+    console.log(this.date);
+    try {
+        const response = await fetch(`http://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${this.lat},${this.lon}&dt=${this.date}`);
+        const data = await response.json();
+        // Extract location information
+        const location = data.location;
+        this.environment_props['cityName'] = location.name;
+		this.environment_props['state'] = location.region;
+        if (data.forecast && data.forecast.forecastday && data.forecast.forecastday.length > 0) {
+            this.weatherData = data.forecast.forecastday[0].day;
+            this.environment_props['temperature'] = this.weatherData.avgtemp_c;
+            this.environment_props['humidity'] = this.weatherData.avghumidity;
+            console.log(`Temperature: ${this.environment_props['temperature']} °C`);
+            console.log(`Relative Humidity: ${this.environment_props['humidity']} %`);
+            console.log(data.forecast.forecastday[0].hour)
+			// Calculate the sum of all pressure fields using the reduce() method
+			const sum = data.forecast.forecastday[0].hour.reduce((accumulator, currentObj) => {
+			return accumulator + currentObj.pressure_mb;
+			}, 0);
+			// Calculate the average by dividing the sum by the length of the dataArray
+			this.environment_props['pressure'] = sum / data.forecast.forecastday[0].hour.length / 1.33322;
+        } else {
+            console.log('No weather data found for the given location and date.');
         }
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+    }
+},
 
-    }, 
-
-  }
-
-
-  </script>
-
+		},
+}
+</script>
 <style>
 .my-content {
-  margin-top: -50px; /* Adjust the top margin */
-  /* padding-left: 16px; Adjust the left padding */
+	margin-top: -50px;
+	/* Adjust the top margin */
+	/* padding-left: 16px; Adjust the left padding */
 }
 
 @media (hover: hover) {
-  svg:hover {
-    cursor: pointer;
-  }
-  svg path:hover {
-    opacity: 0.8;
-  }
+	svg:hover {
+		cursor: pointer;
+	}
+	svg path:hover {
+		opacity: 0.8;
+	}
 }
 
 </style>
