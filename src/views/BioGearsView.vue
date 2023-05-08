@@ -168,19 +168,33 @@
                 label="Mean Arterial Pressure (mmHg)"
               ></v-text-field> -->
               
-              <v-text-field
+              <v-slider
                 v-model="patient_vitals['DiastolicArterialPressureBaseline']"
                 label="Diastolic Arterial Pressure (mmHg)"
+				max="80"
+				min="60"
+				step="0.5"
                 required
-                hint="Enter value between 60-80 mmHg"
-              ></v-text-field>
+              ><template v-slot:append>
+                  <v-text-field
+                    v-model="patient_vitals['DiastolicArterialPressureBaseline']"
+                    hide-details single-line density="compact" type="number" suffix="mmHg" style="width: 180px"
+                  ></v-text-field>
+                </template></v-slider>
 
-              <v-text-field
+              <v-slider
                 v-model="patient_vitals['SystolicArterialPressureBaseline']"
                 label="Systolic Arterial Pressure (mmHg)"
+				max="120"
+				min="90"
+				step="0.5"
                 required
-                hint="Enter value between 90-120 mmHg"
-              ></v-text-field>
+              ><template v-slot:append>
+                  <v-text-field
+                    v-model="patient_vitals['SystolicArterialPressureBaseline']"
+                    hide-details single-line density="compact" type="number" suffix="mmHg" style="width: 180px"
+                  ></v-text-field>
+                </template></v-slider>
 
               <v-slider
                 v-model="patient_vitals['HeartRateBaseline']"
@@ -244,6 +258,7 @@
 								<v-btn @click="pullEnvironmentData" color="#3c2d70" style="color: white">Generate Environment Data</v-btn>
 								<br>
 								<br>
+								<v-text-field v-if="weatherData" v-model="environment_props['name']" label="Enter a name for the Environment"></v-text-field>
 								<v-slider v-if="weatherData" v-model="environment_props['temperature']" label="Temperature" clearable class="align-center" :max="temperature_max" :min="temperature_min" :step="0.1">
 									<template v-slot:append>
 										<v-text-field v-model="environment_props['temperature']" hide-details clearable single-line density="compact" type="number" suffix="Celsius" style="width: 180px"></v-text-field>
@@ -368,7 +383,7 @@
                 <v-btn @click="removeAction(-1)">Remove Injury</v-btn>
                 <v-btn @click="addAction">Add Another Injury</v-btn>
                 <v-form
-                  ref="form"
+                  ref="actions"
                   v-model="valid"
                   lazy-validation
                   >
@@ -479,6 +494,7 @@ import xmlbuilder from 'xmlbuilder'
 export default {
 	data: () => ({
 		environment_props: {
+			"name": null,
 			"temperature": null,
 			"pressure": null,
 			"humidity": null,
@@ -551,10 +567,10 @@ export default {
       patient_vitals: {
         "BloodTypeABO": 'AB',
         "BloodTypeRh": 'Positive',
-        "DiastolicArterialPressureBaseline": [],
+        "DiastolicArterialPressureBaseline": 73.5,
         "HeartRateBaseline": 72,
         "RespirationRateBaseline": 14,
-        "SystolicArterialPressureBaseline":[]
+        "SystolicArterialPressureBaseline":114
       },
       scenario_props: {
         'Name': [],
@@ -658,7 +674,59 @@ export default {
             pathElement.classList.add("active");
           }
         },
+		saveEnvXML() {
+			const xml = xmlbuilder.create('EnvironmentalConditions', {
+				encoding: 'UTF-8',
+				standalone: 'no'
+			})	
+			xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel",
+			'contentVersion':"Biogears_7.5.0+85",
+			'xmlns:xsi':"http://www.w3.org/2001/XMLSchema-instance",
+			'xsi:schemaLocation':"uri:/mil/tatrc/physiology/datamodel BioGearsDataModel.xsd"})	
+			
+			xml.ele('Name', this.environment_props['name'])
+			xml.ele('SurroundingType', 'Air')
+			const airvel = xml.ele('AirVelocity')
+			airvel.att({'readOnly': 'false', 'unit': 'm/s', 'value':0.1})
+			const ambTemp = xml.ele('AmbientTemperature')
+			ambTemp.att({'readOnly': 'false', 'unit':'degC', 'value': this.environment_props['temperature']})
+			const atmPress = xml.ele('AtmosphericPressure')
+			atmPress.att({'readOnly': 'false', 'unit':'mmHg', 'value': this.environment_props['pressure']})
+			const clotRes = xml.ele('ClothingResistance')
+			clotRes.att({'readOnly': 'false', 'unit': 'clo', 'value': 0.5})
+			const emiss = xml.ele('Emissivity')
+			emiss.att({'readOnly': 'false', 'value': 0.95})
+			const mrt = xml.ele('MeanRadiantTemperature')
+			mrt.att({'readOnly': 'false', 'unit': 'degC', 'value': 22})
+			const relHum = xml.ele('RelativeHumidity')
+			relHum.att({'readOnly': 'false', 'unit':'', 'value': this.environment_props['humidity']/100})
+			const rat = xml.ele('RespirationAmbientTemperature')
+			rat.att({'readOnly': 'false', 'unit': 'degC', 'value': 22})
+			const nitrogen = xml.ele('AmbientGas')
+			nitrogen.att('Name', 'Nitrogen')
+			const fa1 = nitrogen.ele('FractionAmount')
+			fa1.att({'readOnly': 'false', 'value': 0.7896})
+			const oxygen = xml.ele('AmbientGas')
+			oxygen.att('Name', 'Oxygen')
+			const fa2 = oxygen.ele('FractionAmount')
+			fa2.att({'readOnly': 'false', 'value': 0.21})
+			const co2 = xml.ele('AmbientGas')
+			co2.att('Name', 'CarbonDioxide')
+			const fa3 = co2.ele('FractionAmount')
+			fa3.att({'readOnly': 'false', 'value': 0.0004})
 
+		
+			var xmlString = xml.end({
+            pretty: true
+          });
+          const blob = new Blob([xmlString], {
+            type: 'text/xml'
+          })
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = 'CustomEnvironment.xml'
+          link.click()	
+		},
         saveStateXML() {
           const xml = xmlbuilder.create('Patient', {
             encoding: 'UTF-8',
@@ -670,21 +738,15 @@ export default {
           for (var key1 in this.patient_props) {
             if (key1 == 'age') {
               const Age = xml.ele('Age')
-              Age.att('readOnly', 'false')
-              Age.att('value', this.patient_props[key1])
-              Age.att('unit', 'yr')
+              Age.att({'readOnly': 'false', 'value':this.patient_props[key1], 'unit': 'yr'})
             }
             else if (key1 == 'height') {
               const Height = xml.ele('Height')
-              Height.att('readOnly', 'false')
-              Height.att('value', this.patient_props[key1])
-              Height.att('unit', this.height_unit)
+              Height.att({'readOnly': 'false', 'value':this.patient_props[key1], 'unit': this.height_unit})
             }
             else if (key1 == 'weight') {
               const Weight = xml.ele('Weight')
-              Weight.att('readOnly', 'false')
-              Weight.att('value', this.patient_props[key1])
-              Weight.att('unit', this.weight_unit)
+              Weight.att({'readOnly': 'false', 'value':this.patient_props[key1], 'unit': this.weight_unit})
             }
             else {
               xml.ele(key1, this.patient_props[key1])
@@ -702,27 +764,20 @@ export default {
             }
             else if (key2 == 'DiastolicArterialPressureBaseline') {
               const DiastolicArterialPressureBaseline = xml.ele('DiastolicArterialPressureBaseline')
-              DiastolicArterialPressureBaseline.att('readOnly', 'false')
-              DiastolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-              DiastolicArterialPressureBaseline.att('unit', 'mmHg')
+              DiastolicArterialPressureBaseline.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': 'mmHg'})
             }
             else if (key2 == 'HeartRateBaseline') {
               const HeartRate = xml.ele('HeartRateBaseline')
-              HeartRate.att('readOnly', 'false')
-              HeartRate.att('value', this.patient_vitals[key2])
-              HeartRate.att('unit', '1/min')
+              HeartRate.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': '1/min'})
             }
+
             else if (key2 == 'RespirationRateBaseline') {
               const RespRate = xml.ele('RespirationRateBaseline')
-              RespRate.att('readOnly', 'false')
-              RespRate.att('value', this.patient_vitals[key2])
-              RespRate.att('unit', '1/min')
+              RespRate.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': '1/min'})
             }
             else if (key2 == 'SystolicArterialPressureBaseline') {
               const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
-              SystolicArterialPressureBaseline.att('readOnly', 'false')
-              SystolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-              SystolicArterialPressureBaseline.att('unit', 'mmHg')
+              SystolicArterialPressureBaseline.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': 'mmHg'})
             }
             else {
               xml.ele(key2, this.patient_vitals[key2])
@@ -754,68 +809,50 @@ export default {
           }
           const InitialParams = xml.ele('InitialParameters')
           InitialParams.ele('PatientFile', 'CustomPatient.xml')
+		if ((this.environment_props['name'])!=null && (this.environment_props['temperature']!=null) && (this.environment_props['pressure']!=null)) {
+			const cond = InitialParams.ele('Condition')
+			cond.att('xsi:type', "InitialEnvironmentData")
+			cond.ele('ConditionsFile', 'CustomEnvironment.xml')
 
+		}
 
           const data_req = xml.ele('DataRequests')
           data_req.att('SamplesPerSecond', 50)
           const map = data_req.ele('DataRequest')
-          map.att('xsi:type', 'PhysiologyDataRequestData')
-          map.att('Name', 'MeanArterialPressure')
-          map.att('Unit', 'mmHg')
-          map.att('Precision', 1)
+          map.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'MeanArterialPressure','Unit': 'mmHg', 'Precision': 1})
+
           const sap = data_req.ele('DataRequest')
-          sap.att('xsi:type', 'PhysiologyDataRequestData')
-          sap.att('Name', 'SystolicArterialPressure')
-          sap.att('Unit', 'mmHg')
-          sap.att('Precision', 0)
+          sap.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'SystolicArterialPressure','Unit': 'mmHg', 'Precision': 0})
+
           const dap = data_req.ele('DataRequest')
-          dap.att('xsi:type', 'PhysiologyDataRequestData')
-          dap.att('Name', 'DiastolicArterialPressure')
-          dap.att('Unit', 'mmHg')
-          dap.att('Precision', 1)
+          dap.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'DiastolicArterialPressure', 'Unit': 'mmHg', 'Precision': 1})
           const co = data_req.ele('DataRequest')
-          co.att('xsi:type', 'PhysiologyDataRequestData')
-          co.att('Name', 'CardiacOutput')
-          co.att('Unit', 'L/min')
-          co.att('Precision', 2)
+          co.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'CardiacOutput', 'Unit': 'L/min', 'Precision': 2})
+
           const cvp = data_req.ele('DataRequest')
-          cvp.att('xsi:type', 'PhysiologyDataRequestData')
-          cvp.att('Name', 'CentralVenousPressure')
-          cvp.att('Unit', 'mmHg')
-          cvp.att('Precision', 2)
+          cvp.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'CentralVenousPressure', 'Unit': 'mmHg', 'Precision': 2})
+
           const hr = data_req.ele('DataRequest')
-          hr.att('xsi:type', 'PhysiologyDataRequestData')
-          hr.att('Name', 'HeartRate')
-          hr.att('Unit', '')
-          hr.att('Precision', 2)
+          hr.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'HeartRate','Unit': '', 'Precision': 2})
+
           const tv = data_req.ele('DataRequest')
-          tv.att('xsi:type', 'PhysiologyDataRequestData')
-          tv.att('Name', 'TidalVolume')
-          tv.att('Unit', 'mL')
-          tv.att('Precision', 3)
+          tv.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'TidalVolume', 'Unit': 'mL','Precision': 3 })
+
           const rr = data_req.ele('DataRequest')
-          rr.att('xsi:type', 'PhysiologyDataRequestData')
-          rr.att('Name', 'RespirationRate')
-          rr.att('Unit', '1/min')
-          rr.att('Precision', 2)
+          rr.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'RespirationRate', 'Unit': '1/min', 'Precision': 2 })
+
           const oxsat = data_req.ele('DataRequest')
-          oxsat.att('xsi:type', 'PhysiologyDataRequestData')
-          oxsat.att('Name', 'OxygenSaturation')
-          oxsat.att('Unit', 'unitless')
-          oxsat.att('Precision', 3)
+          oxsat.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'OxygenSaturation', 'Unit': 'unitless', 'Precision': 3})
+
           const ct = data_req.ele('DataRequest')
-          ct.att('xsi:type', 'PhysiologyDataRequestData')
-          ct.att('Name', 'CoreTemperature')
-          ct.att('Unit', 'degC')
-          ct.att('Precision', 1)
+          ct.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'CoreTemperature', 'Unit': 'degC', 'Precision': 1})
+
 
 
           for (var item2 in this.action) {
             const act = xml.ele('Action')
             if (this.action[item2]['type'] == 'Tension Pneumothorax') {
-              act.att('xsi:type', 'TensionPneumothoraxData')
-              act.att('Type', this.action[item2]['openclose'])
-              act.att('Side', this.action[item2]['side'])
+              act.att({'xsi:type': 'TensionPneumothoraxData', 'Type': this.action[item2]['openclose'], 'Side': this.action[item2]['side']})
               const sev = act.ele('Severity')
               sev.att('value', this.action[item2]['severity']) 
             }
@@ -854,8 +891,7 @@ export default {
             time.att('unit', this.action_unit)
 
           const save_file = xml.ele('Action')
-            save_file.att('xsi:type', 'SerializeStateData')
-            save_file.att('Type', 'Save')
+            save_file.att({'xsi:type': 'SerializeStateData', 'Type': 'Save'})
             save_file.ele('Filename', './CustomBioGearsState.xml')
 
           var xmlString = xml.end({
@@ -873,6 +909,9 @@ export default {
         saveBiogearsFiles() {
           this.saveStateXML()
           this.saveScenarioXML()
+		if ((this.environment_props['name'])!=null && (this.environment_props['temperature']!=null) && (this.environment_props['pressure']!=null)) {
+		this.saveEnvXML()
+		}
 		},
 			async pullEnvironmentData() {
     const fetch = require('node-fetch'); // Only needed in Node.js environment
