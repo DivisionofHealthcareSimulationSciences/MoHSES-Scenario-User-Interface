@@ -591,8 +591,6 @@
                     label="Value"
                   ></v-text-field>
                   <v-btn
-                    color="#ab51c4"
-                    style="color: white"
                     @click="removeCapability(index)"
                     >Remove Capability</v-btn
                   >
