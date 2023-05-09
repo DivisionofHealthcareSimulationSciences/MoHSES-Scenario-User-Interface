@@ -333,12 +333,12 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
               <br>
               <v-text-field v-model="scenario_props['Name']" label="Scenario Name"> </v-text-field>
               <v-text-field v-model="scenario_props['Description']" label="Scenario Brief Description"> </v-text-field>
-              <p style="font-size: 20px">Please configure patient injuries and timeline:</p>
+              <p style="font-size: 20px">Please configure patient injuries and timeline by either clicking on body part to add, or selecting 'Add Injury':</p>
+              <br>
               <br>
               <br>
               <v-row>
                 <v-col cols="12" sm="8" md="6" class="my-content">
-
                   <svg
                     width="550px"
                     height="600px"
@@ -396,43 +396,46 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
                 </v-col>
 
                 <v-col>
-                  <div v-for="(exp, index) in action" :key="index">
-                    <v-select v-model="exp.region" label="Select Body Region" :items="body_regions" :onChange="changeColors()"></v-select>
-                    <v-autocomplete v-model="exp.type" label="Select Injury Type" :items="patient_body[exp.region]"></v-autocomplete>
+                  <div v-for="(item, index) in action" :key='index'> <!--v-for="(exp, index) in action" :key="index"-->
+                    <br>
+                    <v-select v-model="item.region" label="Select Body Region" :items="body_regions" :onChange="changeColors()"></v-select>
+                    <v-autocomplete v-model="item.type" label="Select Injury Type" :items="patient_body[item.region]"></v-autocomplete>
                     <v-row>
                       <v-col>
-                        <v-select v-if="exp.type==='Tension Pneumothorax'" v-model="exp.side" label="Select side" :items="sides" style="width: 200px" class="align-left"></v-select>
+                        <v-select v-if="item.type==='Tension Pneumothorax'" v-model="item.side" label="Select side" :items="sides" style="width: 200px" class="align-left"></v-select>
                       </v-col>
                       <v-col>
-                        <v-select v-if="exp.type==='Tension Pneumothorax'" v-model="exp.openclose" label="Open or Closed" :items="open_closed" class="align-right" style="width: 200px"></v-select>
+                        <v-select v-if="item.type==='Tension Pneumothorax'" v-model="item.openclose" label="Open or Closed" :items="open_closed" class="align-right" style="width: 200px"></v-select>
                       </v-col>
                     </v-row>
-                    <v-select v-if="exp.type==='Hemorrhage'" v-model=exp.compartment label="Select compartment" :items="hemorrhage_regions[exp.region]"></v-select>
-                    <v-text-field v-if="exp.type==='Hemorrhage'" v-model="exp.hemrate" label="Initial Rate" suffix="mL/min"></v-text-field>
-                    <v-select v-if="exp.type==='Brain Injury'" v-model=exp.braininjurytype label="Select type" :items="brain_injury_types"></v-select>
-                    <v-text-field v-if="exp.type==='Burn Wound'" v-model=exp.burnsurfacearea label="Enter Fraction of Total Body Surface Area Affected" hint="Enter a decimal between 0 and 1."></v-text-field>
-                    <v-slider v-if="(exp.type!='Hemorrhage') && (exp.type!='Burn Wound') && (exp.type!='Cardiac Arrest')" v-model="exp.severity" label="Severity" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
+                    <v-select v-if="item.type==='Hemorrhage'" v-model=item.compartment label="Select compartment" :items="hemorrhage_regions[item.region]"></v-select>
+                    <v-text-field v-if="item.type==='Hemorrhage'" v-model="item.hemrate" label="Initial Rate" suffix="mL/min"></v-text-field>
+                    <v-select v-if="item.type==='Brain Injury'" v-model=item.braininjurytype label="Select type" :items="brain_injury_types"></v-select>
+                    <v-text-field v-if="item.type==='Burn Wound'" v-model=item.burnsurfacearea label="Enter Fraction of Total Body Surface Area Affected" hint="Enter a decimal between 0 and 1."></v-text-field>
+                    <v-slider v-if="(item.type!='Hemorrhage') && (item.type!='Burn Wound') && (item.type!='Cardiac Arrest')" v-model="item.severity" label="Severity (0-1)" class="align-center" :max="sev_max" :min="sev_min" :step="0.1">
                       <template v-slot:append>
-                        <v-text-field v-model="exp.severity" hide-details single-line density="compact" style="width: 90px"></v-text-field>
+                        <v-text-field v-model="item.severity" hide-details single-line density="compact" style="width: 90px"></v-text-field>
                       </template>
                     </v-slider>
+                    <v-btn class='text-right' @click="removeAction(index)">Remove Injury</v-btn>
+                    <br>
+                    <br>
                   </div>
-                  <v-btn @click="removeAction(-1)">Remove Injury</v-btn>
-                  <v-btn @click="addAction" color='#3c2d70' style="color: white">Add Another Injury</v-btn>
-                  <v-form
+                  <v-btn @click="addAction" color='#3c2d70' style="color: white">Add Injury</v-btn>
+                  
+                  <!-- <v-form
                     ref="form"
                     v-model="valid"
-                    lazy-validation
-                    >
-                      <v-combobox v-for="(item, index) in name"
-                        :key="index"
-                        :label="Object.keys(item)[0]"
-                        :items='patient_body[Object.keys(item)[0]]'
-                        v-model="item[Object.keys(item)[0]]" 
-                        multiple
-                        chips      
-                    ></v-combobox>
-                  </v-form>
+                    lazy-validation>
+                    <v-combobox v-for="(item, index) in name"
+                      :key="index"
+                      :label="Object.keys(item)[0]"
+                      :items='patient_body[Object.keys(item)[0]]'
+                      v-model="item[Object.keys(item)[0]]" 
+                      multiple
+                      chips> 
+                    </v-combobox>
+                  </v-form> -->
                 </v-col>
               </v-row>
               <br>
@@ -514,119 +517,119 @@ export default {
 		dialog1: null,
 		dialog: null,
 		age_min: 18,
-      age_max: 65,
-      core_temp_min: 0,
-      core_temp_max: 70,
-      heart_rate_min: 50,
-      heart_rate_max: 109,
-      resp_rate_min: 12,
-      resp_rate_max: 20,
-      height_min: 55,
-      height_max: 190,
-      height_units: ['cm', 'in'],
-      height_unit: 'cm',
-      weight_min: 20,
-      weight_max: 250,
-      weight_units: ['kg', 'lb'],
-      weight_unit: 'kg',
-      time_min: 0,
-      time_max: 60,
-      action_time: 0,
-      action_unit: 'min',
-      sev_min: 0,
-      sev_max: 1,
-      med_options: ['A', 'B', 'C'],
-      tab: 'home',
-      name: [],
-      sides: ['Left', 'Right'],
-      open_closed: ['Open', 'Closed'],
-      drawer: false,
-      valid: true,
-      expanded: [0],
-      scenario_file_name: [],
-      action: [
-        { region: [],
-          type: [],
-        },
-      ],
-		colors: {
-		'Head':'black',
-        'Neck': 'black', 
-        'Chest': 'black', 
-        'Back':'black',
-        'Abdomen':'black', 
-        'Pelvis':'black',
-        'Extremities':'black',
-		},
-      patient_props: {
-        "Name": [],
-        "Sex": [],
-        "age": 44,
-        "weight": 65,
-        "height": 170
-        
-      },
-      patient_vitals: {
-        "BloodTypeABO": 'AB',
-        "BloodTypeRh": 'Positive',
-        "DiastolicArterialPressureBaseline": [],
-        "HeartRateBaseline": 72,
-        "RespirationRateBaseline": 14,
-        "SystolicArterialPressureBaseline":[]
-      },
-      scenario_props: {
-        'Name': [],
-        'Description': [],
-      },
-      genders: [
-        'Male',
-        'Female'
-      ],
-      patient_body: {
-        'Head':['Hemorrhage', 'Brain Injury', 'Acute Stress', 'Burn Wound'],
-        'Neck':['Airway Obstruction', 'Apnea', 'Burn Wound'], 
-        'Chest':['Asthma Attack', 'Acute Respiratory Distress', 'Bronchoconstriction', 'Cardiac Arrest', 'Tension Pneumothorax', 'Burn Wound', 'Hemorrhage'], 
-        'Back':['Burn Wound'],
-        'Abdomen':['Burn Wound'], 
-        'Pelvis':['Burn Wound'],
-        'Extremities':['Burn Wound', 'Hemorrhage'],
-      },
-      hemorrhage_regions: {
-        'Head': ['Brain'],
-        'Chest': ['Aorta', 'Myocardium', 'Vena Cava', 'Lung'],
-        'Abdomen': ['Spleen', 'Liver', 'LeftKidney', 'RightKidney', 'Splanchnic', 'SmallIntestine', 'LargeIntestine'],
-        'Extremities': ['LeftArm', 'RightArm', 'LeftLeg', 'RightLeg']
+    age_max: 65,
+    core_temp_min: 0,
+    core_temp_max: 70,
+    heart_rate_min: 50,
+    heart_rate_max: 109,
+    resp_rate_min: 12,
+    resp_rate_max: 20,
+    height_min: 55,
+    height_max: 190,
+    height_units: ['cm', 'in'],
+    height_unit: 'cm',
+    weight_min: 20,
+    weight_max: 250,
+    weight_units: ['kg', 'lb'],
+    weight_unit: 'kg',
+    time_min: 0,
+    time_max: 60,
+    action_time: 0,
+    action_unit: 'min',
+    sev_min: 0,
+    sev_max: 1,
+    med_options: ['A', 'B', 'C'],
+    tab: 'home',
+    name: [],
+    sides: ['Left', 'Right'],
+    open_closed: ['Open', 'Closed'],
+    drawer: false,
+    valid: true,
+    expanded: [0],
+    scenario_file_name: [],
+    action: [],
+    //   { region: [],
+    //     type: [],
+    //   },
+    // ],
+    colors: {
+      'Head':'black',
+      'Neck': 'black', 
+      'Chest': 'black', 
+      'Back':'black',
+      'Abdomen':'black', 
+      'Pelvis':'black',
+      'Extremities':'black',
+    },
+    patient_props: {
+      "Name": [],
+      "Sex": [],
+      "age": 44,
+      "weight": 65,
+      "height": 170
+      
+    },
+    patient_vitals: {
+      "BloodTypeABO": 'AB',
+      "BloodTypeRh": 'Positive',
+      "DiastolicArterialPressureBaseline": [],
+      "HeartRateBaseline": 72,
+      "RespirationRateBaseline": 14,
+      "SystolicArterialPressureBaseline":[]
+    },
+    scenario_props: {
+      'Name': [],
+      'Description': [],
+    },
+    genders: [
+      'Male',
+      'Female'
+    ],
+    patient_body: {
+      'Head':['Hemorrhage', 'Brain Injury', 'Acute Stress', 'Burn Wound'],
+      'Neck':['Airway Obstruction', 'Apnea', 'Burn Wound'], 
+      'Chest':['Asthma Attack', 'Acute Respiratory Distress', 'Bronchoconstriction', 'Cardiac Arrest', 'Tension Pneumothorax', 'Burn Wound', 'Hemorrhage'], 
+      'Back':['Burn Wound'],
+      'Abdomen':['Burn Wound'], 
+      'Pelvis':['Burn Wound'],
+      'Extremities':['Burn Wound', 'Hemorrhage'],
+    },
+    hemorrhage_regions: {
+      'Head': ['Brain'],
+      'Chest': ['Aorta', 'Myocardium', 'Vena Cava', 'Lung'],
+      'Abdomen': ['Spleen', 'Liver', 'LeftKidney', 'RightKidney', 'Splanchnic', 'SmallIntestine', 'LargeIntestine'],
+      'Extremities': ['LeftArm', 'RightArm', 'LeftLeg', 'RightLeg']
     },
     brain_injury_types: [
       'Diffuse',
       'LeftFocal',
       'RightFocal'
     ],
-      body_regions: [
-        'Head',
-        'Neck', 
-        'Chest', 
-        'Back',
-        'Abdomen', 
-        'Pelvis',
-        'Extremities']
-      ,
-      blood_types: [
-        'A',
-        'B',
-        'AB',
-        'O'
-      ],
-      rh: [
-        'Positive',
-        'Negative'
-      ],
-      time_units: [
-        's',
-        'min',
-        'hr'
-      ]
-	}),
+    body_regions: [
+      'Head',
+      'Neck', 
+      'Chest', 
+      'Back',
+      'Abdomen', 
+      'Pelvis',
+      'Extremities']
+    ,
+    blood_types: [
+      'A',
+      'B',
+      'AB',
+      'O'
+    ],
+    rh: [
+      'Positive',
+      'Negative'
+    ],
+    time_units: [
+      's',
+      'min',
+      'hr'
+    ]
+  }),
 	methods: {
 		changeColors() {
 			const selected_regions = []
@@ -645,7 +648,7 @@ export default {
 		},
 		nextTab(id) {
 				this.tab = id;
-			},
+    },
 			addAction() {
 				this.action.push({
 					region: '',
@@ -664,17 +667,21 @@ export default {
 			},
 			pathClicked(id) {
 				let pathElement = document.getElementById(id);
-				if(this.name.some(x => Object.keys(x).includes(id))) {
-					this.name = this.name.filter(x => !Object.keys(x).includes(id));
+				if(this.action.some(x => Object.keys(x).includes('Head'))) { // this.action.some(x => Object.keys(x).includes(id))
+					this.action.splice(-1, 1) // = this.name.filter(x => !Object.keys(x).includes(id)); // this.name.push({[id]: ''})
 				} else {
-					this.name.push({
-						[id]: ''
-					})
+					this.action.push({
+            region: id,
+            type: '',
+            severity: '',
+        })
 				}
 				if(pathElement.classList.contains("active")) {
-					pathElement.classList.remove("active");
+					// pathElement.classList.remove("active");
+          this.colors[id] = 'black';
 				} else {
-					pathElement.classList.add("active");
+					// pathElement.classList.add("active");
+          this.colors[id] = 'red';
 				}
 			},
 			saveStateXML() {
@@ -902,28 +909,35 @@ export default {
 	}
 }
 
-#HeadNeck.active {
+#Head.active { 
+  fill: rgb(238, 174, 0);
+}
+#Neck.active {
 	fill: rgb(255, 0, 0);
 }
 
 #Chest.active {
-	fill: rgb(163, 0, 0);
+	fill: rgb(255, 0, 0);
 }
 
 #Extremities.active {
-	fill: rgb(89, 0, 0);
+	fill: rgb(255, 0, 0);
 }
 
 #Back.active {
-	fill: rgb(255, 138, 138);
+	fill: rgb(255, 0, 0);
 }
 
-#AbdomenPelvis.active {
-	fill: rgb(255, 135, 37);
+#Abdomen.active {
+  fill: rgb(255, 0, 0);
+}
+
+#Pelvis.active {
+	fill: rgb(255, 0, 0);
 }
 
 .active {
-	fill: #0004ff;
+	fill: rgb(238, 174, 0);
 }
 
 .noClick {
