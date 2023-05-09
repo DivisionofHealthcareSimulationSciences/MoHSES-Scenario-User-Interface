@@ -72,7 +72,7 @@
               </v-list-item>
               <v-list-item> <v-list-item-title style="font-size: 21px">2. Move downloaded files to proper directories</v-list-item-title> After clicking Submit in the BioGears Scenario Creation Tool tab, two files should be downloaded - CustomScenario.xml and CustomPatient.xml.
                 Within the BioGears directory folder, move CustomScenario.xml to the <i>core/build/runtime/Scenarios/Patient</i> folder. Also within the BioGears directory folder,
-                move CustomPatient.xml to the <i>core/build/runtime/patients</i> folder.
+                move CustomPatient.xml to the <i>core/build/runtime/patients</i> folder. If a Custom Environment was created, move the CustomEnvironment.xml file to <i>core/build/runtime/environments</i>.
               </v-list-item>
 
               <v-list-item> <v-list-item-title style="font-size: 21px">3. Run BioGears executable in command line</v-list-item-title>Open command line and within the BioGears directory, navigate to <i>core/build/runtime</i>. 
@@ -258,7 +258,7 @@
 								<v-btn @click="pullEnvironmentData" color="#3c2d70" style="color: white">Generate Environment Data</v-btn>
 								<br>
 								<br>
-								<v-text-field v-if="weatherData" v-model="environment_props['name']" label="Enter a name for the Environment"></v-text-field>
+								<v-text-field v-if="weatherData" v-model="environment_props['name']" label="Enter a name for the Environment" required></v-text-field>
 								<v-slider v-if="weatherData" v-model="environment_props['temperature']" label="Temperature" clearable class="align-center" :max="temperature_max" :min="temperature_min" :step="0.1">
 									<template v-slot:append>
 										<v-text-field v-model="environment_props['temperature']" hide-details clearable single-line density="compact" type="number" suffix="Celsius" style="width: 180px"></v-text-field>
