@@ -1,6 +1,6 @@
-# my-project
+# MoHSES Scenario Creation Tool
 
-## Project setup
+## Node Project setup (local environment)
 ```
 npm install
 ```

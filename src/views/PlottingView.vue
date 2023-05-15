@@ -1,12 +1,12 @@
 <template>
-	<v-toolbar style="color: white" color="#3c2d70">
-		<v-toolbar-title>BioGears Plotting Tool</v-toolbar-title>
+	<v-toolbar color="#3c2d70" style="color: white">
+		<v-toolbar-title class="text-center" :style="{ fontSize: '38px', fontWeight: 'bold' }">BioGears Visualization Tool</v-toolbar-title>
 	</v-toolbar>
 	<v-main class="bg-grey-lighten-3">
 		<v-container>
 			<v-card flat class="mt-n12">
 				<br>
-				<v-card-title class="text-center" style="font-size: 36px">Welcome to the BioGears Plotting Tool!</v-card-title>
+				<v-card-title class="text-center" style="font-size: 36px">Welcome to the BioGears Visualization Tool!</v-card-title>
 				<v-card-text>
 					<br>
 					<p class="text-center" style="font-size: 20px">Please upload a simulation .CSV to visualize your results:</p>

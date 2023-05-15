@@ -23,8 +23,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "MoHSES" */ '../views/MoHSESView.vue')
   },
   {
-    path: '/PlottingTool',
-    name: 'PlottingTool',
+    path: '/VisualizationTool',
+    name: 'VisualizationTool',
     component: () => import(/* webpackChunkName: "MoHSES" */ '../views/PlottingView.vue')
   }
 ]
