@@ -592,18 +592,10 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
 			co2.att('Name', 'CarbonDioxide')
 			const fa3 = co2.ele('FractionAmount')
 			fa3.att({'readOnly': 'false', 'value': 0.0004})
-
-		
 			var xmlString = xml.end({
-            pretty: true
-          });
-          const blob = new Blob([xmlString], {
-            type: 'text/xml'
-          })
-          const link = document.createElement('a')
-          link.href = URL.createObjectURL(blob)
-          link.download = 'CustomEnvironment.xml'
-          link.click()	
+					pretty: true
+					});
+			this.env = xmlString
 		},
         saveStateXML() {
           const xml = xmlbuilder.create('Patient', {
@@ -663,15 +655,10 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
           }
 
           var xmlString = xml.end({
-            pretty: true
-          });
-          const blob = new Blob([xmlString], {
-            type: 'text/xml'
-          })
-          const link = document.createElement('a')
-          link.href = URL.createObjectURL(blob)
-          link.download = 'CustomPatient.xml'
-          link.click()
+					pretty: true
+				});
+				this.patient = xmlString
+	  
         },
 
         saveScenarioXML() {
@@ -773,15 +760,9 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
             save_file.ele('Filename', './CustomBioGearsState.xml')
 
           var xmlString = xml.end({
-            pretty: true
-          });
-          const blob = new Blob([xmlString], {
-            type: 'text/xml'
-          })
-          const link = document.createElement('a')
-          link.href = URL.createObjectURL(blob)
-          link.download = 'CustomScenario.xml'
-          link.click()
+					pretty: true
+				});
+				this.scenario = xmlString
         },
 			saveBiogearsFiles() {
 				this.saveStateXML()
