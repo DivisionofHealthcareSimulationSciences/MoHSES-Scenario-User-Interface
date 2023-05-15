@@ -552,295 +552,237 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
 				console.log(pathElement.classList)
 				this.changeAction(id);
 			},
-			saveEnvXML() {
-				const xml = xmlbuilder.create('EnvironmentalConditions', {
-					encoding: 'UTF-8',
-					standalone: 'no'
-				})
-				xml.att({
-					'xmlns': "uri:/mil/tatrc/physiology/datamodel",
-					'contentVersion': "Biogears_7.5.0+85",
-					'xmlns:xsi':"http://www.w3.org/2001/XMLSchema-instance",
-					'xsi:schemaLocation': "uri:/mil/tatrc/physiology/datamodel BioGearsDataModel.xsd"
-				})
-				xml.ele('Name', this.environment_props['name'])
-				xml.ele('SurroundingType', 'Air')
-				const airvel = xml.ele('AirVelocity')
-				airvel.att({
-					'readOnly': 'false',
-					'unit': 'm/s',
-					'value': 0.1
-				})
-				const ambTemp = xml.ele('AmbientTemperature')
-				ambTemp.att({
-					'readOnly': 'false',
-					'unit': 'degC',
-					'value': this.environment_props['temperature']
-				})
-				const atmPress = xml.ele('AtmosphericPressure')
-				atmPress.att({
-					'readOnly': 'false',
-					'unit': 'mmHg',
-					'value': this.environment_props['pressure']
-				})
-				const clotRes = xml.ele('ClothingResistance')
-				clotRes.att({
-					'readOnly': 'false',
-					'unit': 'clo',
-					'value': 0.5
-				})
-				const emiss = xml.ele('Emissivity')
-				emiss.att({
-					'readOnly': 'false',
-					'value': 0.95
-				})
-				const mrt = xml.ele('MeanRadiantTemperature')
-				mrt.att({
-					'readOnly': 'false',
-					'unit': 'degC',
-					'value': 22
-				})
-				const relHum = xml.ele('RelativeHumidity')
-				relHum.att({
-					'readOnly': 'false',
-					'unit': '',
-					'value': this.environment_props['humidity'] / 100
-				})
-				const rat = xml.ele('RespirationAmbientTemperature')
-				rat.att({
-					'readOnly': 'false',
-					'unit': 'degC',
-					'value': 22
-				})
-				const nitrogen = xml.ele('AmbientGas')
-				nitrogen.att('Name', 'Nitrogen')
-				const fa1 = nitrogen.ele('FractionAmount')
-				fa1.att({
-					'readOnly': 'false',
-					'value': 0.7896
-				})
-				const oxygen = xml.ele('AmbientGas')
-				oxygen.att('Name', 'Oxygen')
-				const fa2 = oxygen.ele('FractionAmount')
-				fa2.att({
-					'readOnly': 'false',
-					'value': 0.21
-				})
-				const co2 = xml.ele('AmbientGas')
-				co2.att('Name', 'CarbonDioxide')
-				const fa3 = co2.ele('FractionAmount')
-				fa3.att({
-					'readOnly': 'false',
-					'value': 0.0004
-				})
-				var xmlString = xml.end({
-					pretty: true
-				});
-				this.env = xmlString
-			},
-			saveStateXML() {
-				const xml = xmlbuilder.create('Patient', {
-					encoding: 'UTF-8',
-					standalone: "yes"
-				})
-				xml.att({
-					'xmlns': "uri:/mil/tatrc/physiology/datamodel",
-					'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-					'contentVersion': "BioGears_7.5"
-				})
-				for (var key1 in this.patient_props) {
-					if (key1 == 'age') {
-						const Age = xml.ele('Age')
-						Age.att('value', this.patient_props[key1])
-						Age.att('units', 'yr')
-					} else if (key1 == 'height') {
-						const Height = xml.ele('Height')
-						Height.att('readOnly', 'false')
-						Height.att('value', this.patient_props[key1])
-						Height.att('unit', this.height_unit)
-					} else if (key1 == 'weight') {
-						const Weight = xml.ele('Weight')
-						Weight.att('readOnly', 'false')
-						Weight.att('value', this.patient_props[key1])
-						Weight.att('unit', this.weight_unit)
-					} else {
-						xml.ele(key1, this.patient_props[key1])
-					}
-				}
-				for (var key2 in this.patient_vitals) {
-					if (key2 == 'BloodTypeRh') {
-						if (this.patient_vitals[key2] == 'Positive') {
-							xml.ele(key2, 'true')
-						} else if (this.patient_vitals[key2] == 'Negative') {
-							xml.ele(key2, 'false')
-						}
-					} else if (key2 == 'DiastolicArterialPressureBaseline') {
-						const DiastolicArterialPressureBaseline = xml.ele('DiastolicArterialPressureBaseline')
-						DiastolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-						DiastolicArterialPressureBaseline.att('units', 'mmHg')
-					} else if (key2 == 'SystolicArterialPressureBaseline') {
-						const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
-						SystolicArterialPressureBaseline.att('value', this.patient_vitals[key2])
-						SystolicArterialPressureBaseline.att('units', 'mmHg')
-					} else if (key2 == 'HeartRateBaseline') {
-						const HeartRate = xml.ele('HeartRateBaseline')
-						HeartRate.att('value', this.patient_vitals[key2])
-						HeartRate.att('units', '1/min')
-					} else if (key2 == 'RespirationRateBaseline') {
-						const RespRate = xml.ele('RespirationRateBaseline')
-						RespRate.att('value', this.patient_vitals[key2])
-						RespRate.att('units', '1/min')
-					} else {
-						xml.ele(key2, this.patient_vitals[key2])
-					}
-				}
-				var xmlString = xml.end({
-					pretty: true
-				});
-				this.patient = xmlString
-			},
-			saveScenarioXML() {
-				const xml = xmlbuilder.create('Scenario', {
-					encoding: 'UTF-8',
-					standalone: "yes"
-				})
-				xml.att({
-					'xmlns': "uri:/mil/tatrc/physiology/datamodel",
-					'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
-					'contentVersion': "BioGears_7.5"
-				})
-				for (var key1 in this.scenario_props) {
-					xml.ele(key1, this.scenario_props[key1])
-				}
-				const InitialParams = xml.ele('InitialParameters')
-				InitialParams.ele('PatientFile', 'CustomPatient.xml')
-				if ((this.environment_props['name']) != null && (this.environment_props['temperature'] != null) && (this.environment_props['pressure'] != null)) {
-					const cond = InitialParams.ele('Condition')
-					cond.att('xsi:type', "InitialEnvironmentData")
-					cond.ele('ConditionsFile', 'CustomEnvironment.xml')
-				}
-				const data_req = xml.ele('DataRequests')
-				data_req.att('SamplesPerSecond', 50)
-				const map = data_req.ele('DataRequest')
-				map.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'MeanArterialPressure',
-					'Unit': 'mmHg',
-					'Precision': 1
-				})
-				const sap = data_req.ele('DataRequest')
-				sap.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'SystolicArterialPressure',
-					'Unit': 'mmHg',
-					'Precision': 0
-				})
-				const dap = data_req.ele('DataRequest')
-				dap.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'DiastolicArterialPressure',
-					'Unit': 'mmHg',
-					'Precision': 1
-				})
-				const co = data_req.ele('DataRequest')
-				co.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'CardiacOutput',
-					'Unit': 'L/min',
-					'Precision': 2
-				})
-				const cvp = data_req.ele('DataRequest')
-				cvp.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'CentralVenousPressure',
-					'Unit': 'mmHg',
-					'Precision': 2
-				})
-				const hr = data_req.ele('DataRequest')
-				hr.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'HeartRate',
-					'Unit': '',
-					'Precision': 2
-				})
-				const tv = data_req.ele('DataRequest')
-				tv.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'TidalVolume',
-					'Unit': 'mL',
-					'Precision': 3
-				})
-				const rr = data_req.ele('DataRequest')
-				rr.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'RespirationRate',
-					'Unit': '1/min',
-					'Precision': 2
-				})
-				const oxsat = data_req.ele('DataRequest')
-				oxsat.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'OxygenSaturation',
-					'Unit': 'unitless',
-					'Precision': 3
-				})
-				const ct = data_req.ele('DataRequest')
-				ct.att({
-					'xsi:type': 'PhysiologyDataRequestData',
-					'Name': 'CoreTemperature',
-					'Unit': 'degC',
-					'Precision': 1
-				})
-				for (var item2 in this.action) {
-					const act = xml.ele('Action')
-					if (this.action[item2]['type'] == 'Tension Pneumothorax') {
-						act.att({
-							'xsi:type': 'TensionPneumothoraxData',
-							'Type': this.action[item2]['openclose'],
-							'Side': this.action[item2]['side']
-						})
-						const sev = act.ele('Severity')
-						sev.att('value', this.action[item2]['severity'])
-					} else if (this.action[item2]['type'] == 'Hemorrhage') {
-						act.att('xsi:type', 'HemorrhageData')
-						act.att('Compartment', this.action[item2]['compartment'])
-						const initrate = act.ele('InitialRate')
-						initrate.att('value', this.action[item2]['hemrate'])
-						initrate.att('unit', 'mL/min')
-					} else if (this.action[item2]['type'] == 'Brain Injury') {
-						act.att('xsi:type', 'BrainInjuryData')
-						act.att('Type', this.action[item2]['braininjurytype'])
-						const sev = act.ele('Severity')
-						sev.att('value', this.action[item2]['severity'])
-					} else if (this.action[item2]['type'] == 'Burn Wound') {
-						act.att('xsi:type', 'BurnWoundData')
-						const area = act.ele('TotalBodySurfaceArea')
-						area.att('value', this.action[item2]['burnsurfacearea'])
-					} else if (this.action[item2]['type'] == 'Cardiac Arrest') {
-						act.att('xsi:type', 'CardiacArrestData')
-						act.att('State', 'On')
-					} else {
-						act.att('xsi:type', this.action[item2]['type'].replace(/\s/g, "").concat("Data"))
-						const sev = act.ele('Severity')
-						sev.att('value', this.action[item2]['severity'])
-					}
-				}
-				const time_act = xml.ele('Action')
-				time_act.att('xsi:type', 'AdvanceTimeData')
-				const time = time_act.ele('Time')
-				time.att('value', this.action_time)
-				time.att('unit', this.action_unit)
-				const save_file = xml.ele('Action')
-				save_file.att({
-					'xsi:type': 'SerializeStateData',
-					'Type': 'Save'
-				})
-				save_file.ele('Filename', './CustomBioGearsState.xml')
-				var xmlString = xml.end({
-					pretty: true
-				});
-				this.scenario = xmlString
-			},
+		saveEnvXML() {
+			const xml = xmlbuilder.create('EnvironmentalConditions', {
+				encoding: 'UTF-8',
+				standalone: 'no'
+			})	
+			xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel",
+			'contentVersion':"Biogears_7.5.0+85",
+			'xmlns:xsi':"http://www.w3.org/2001/XMLSchema-instance",
+			'xsi:schemaLocation':"uri:/mil/tatrc/physiology/datamodel BioGearsDataModel.xsd"})	
+			
+			xml.ele('Name', this.environment_props['name'])
+			xml.ele('SurroundingType', 'Air')
+			const airvel = xml.ele('AirVelocity')
+			airvel.att({'readOnly': 'false', 'unit': 'm/s', 'value':0.1})
+			const ambTemp = xml.ele('AmbientTemperature')
+			ambTemp.att({'readOnly': 'false', 'unit':'degC', 'value': this.environment_props['temperature']})
+			const atmPress = xml.ele('AtmosphericPressure')
+			atmPress.att({'readOnly': 'false', 'unit':'mmHg', 'value': this.environment_props['pressure']})
+			const clotRes = xml.ele('ClothingResistance')
+			clotRes.att({'readOnly': 'false', 'unit': 'clo', 'value': 0.5})
+			const emiss = xml.ele('Emissivity')
+			emiss.att({'readOnly': 'false', 'value': 0.95})
+			const mrt = xml.ele('MeanRadiantTemperature')
+			mrt.att({'readOnly': 'false', 'unit': 'degC', 'value': 22})
+			const relHum = xml.ele('RelativeHumidity')
+			relHum.att({'readOnly': 'false', 'unit':'', 'value': this.environment_props['humidity']/100})
+			const rat = xml.ele('RespirationAmbientTemperature')
+			rat.att({'readOnly': 'false', 'unit': 'degC', 'value': 22})
+			const nitrogen = xml.ele('AmbientGas')
+			nitrogen.att('Name', 'Nitrogen')
+			const fa1 = nitrogen.ele('FractionAmount')
+			fa1.att({'readOnly': 'false', 'value': 0.7896})
+			const oxygen = xml.ele('AmbientGas')
+			oxygen.att('Name', 'Oxygen')
+			const fa2 = oxygen.ele('FractionAmount')
+			fa2.att({'readOnly': 'false', 'value': 0.21})
+			const co2 = xml.ele('AmbientGas')
+			co2.att('Name', 'CarbonDioxide')
+			const fa3 = co2.ele('FractionAmount')
+			fa3.att({'readOnly': 'false', 'value': 0.0004})
+
+		
+			var xmlString = xml.end({
+            pretty: true
+          });
+          const blob = new Blob([xmlString], {
+            type: 'text/xml'
+          })
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = 'CustomEnvironment.xml'
+          link.click()	
+		},
+        saveStateXML() {
+          const xml = xmlbuilder.create('Patient', {
+            encoding: 'UTF-8',
+            standalone: "no"
+          })
+          xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel", 'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+          'contentVersion':"BioGears_7.5"})
+
+          for (var key1 in this.patient_props) {
+            if (key1 == 'age') {
+              const Age = xml.ele('Age')
+              Age.att({'readOnly': 'false', 'value':this.patient_props[key1], 'unit': 'yr'})
+            }
+            else if (key1 == 'height') {
+              const Height = xml.ele('Height')
+              Height.att({'readOnly': 'false', 'value':this.patient_props[key1], 'unit': this.height_unit})
+            }
+            else if (key1 == 'weight') {
+              const Weight = xml.ele('Weight')
+              Weight.att({'readOnly': 'false', 'value':this.patient_props[key1], 'unit': this.weight_unit})
+            }
+            else {
+              xml.ele(key1, this.patient_props[key1])
+            }
+          }
+        
+          for (var key2 in this.patient_vitals) {
+            if (key2 == 'BloodTypeRh') {
+              if (this.patient_vitals[key2] == 'Positive') {
+                xml.ele(key2, 'true')
+              }
+              else if (this.patient_vitals[key2] == 'Negative') {
+                xml.ele(key2, 'false')
+              }
+            }
+            else if (key2 == 'DiastolicArterialPressureBaseline') {
+              const DiastolicArterialPressureBaseline = xml.ele('DiastolicArterialPressureBaseline')
+              DiastolicArterialPressureBaseline.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': 'mmHg'})
+            }
+            else if (key2 == 'HeartRateBaseline') {
+              const HeartRate = xml.ele('HeartRateBaseline')
+              HeartRate.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': '1/min'})
+            }
+
+            else if (key2 == 'RespirationRateBaseline') {
+              const RespRate = xml.ele('RespirationRateBaseline')
+              RespRate.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': '1/min'})
+            }
+            else if (key2 == 'SystolicArterialPressureBaseline') {
+              const SystolicArterialPressureBaseline = xml.ele('SystolicArterialPressureBaseline')
+              SystolicArterialPressureBaseline.att({'readOnly': 'false', 'value': this.patient_vitals[key2], 'unit': 'mmHg'})
+            }
+            else {
+              xml.ele(key2, this.patient_vitals[key2])
+            }
+          }
+
+          var xmlString = xml.end({
+            pretty: true
+          });
+          const blob = new Blob([xmlString], {
+            type: 'text/xml'
+          })
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = 'CustomPatient.xml'
+          link.click()
+        },
+
+        saveScenarioXML() {
+          const xml = xmlbuilder.create('Scenario', {
+            encoding: 'UTF-8',
+            standalone: "yes"
+          })
+          xml.att({'xmlns':"uri:/mil/tatrc/physiology/datamodel", 'xmlns:xsi':'http://www.w3.org/2001/XMLSchema-instance',
+          'contentVersion':"BioGears_7.5"})
+          
+          for (var key1 in this.scenario_props) {
+            xml.ele(key1, this.scenario_props[key1])
+          }
+          const InitialParams = xml.ele('InitialParameters')
+          InitialParams.ele('PatientFile', 'CustomPatient.xml')
+		if ((this.environment_props['name'])!=null && (this.environment_props['temperature']!=null) && (this.environment_props['pressure']!=null)) {
+			const cond = InitialParams.ele('Condition')
+			cond.att('xsi:type', "InitialEnvironmentData")
+			cond.ele('ConditionsFile', 'CustomEnvironment.xml')
+
+		}
+
+          const data_req = xml.ele('DataRequests')
+          data_req.att('SamplesPerSecond', 50)
+          const map = data_req.ele('DataRequest')
+          map.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'MeanArterialPressure','Unit': 'mmHg', 'Precision': 1})
+
+          const sap = data_req.ele('DataRequest')
+          sap.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'SystolicArterialPressure','Unit': 'mmHg', 'Precision': 0})
+
+          const dap = data_req.ele('DataRequest')
+          dap.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'DiastolicArterialPressure', 'Unit': 'mmHg', 'Precision': 1})
+          const co = data_req.ele('DataRequest')
+          co.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'CardiacOutput', 'Unit': 'L/min', 'Precision': 2})
+
+          const cvp = data_req.ele('DataRequest')
+          cvp.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'CentralVenousPressure', 'Unit': 'mmHg', 'Precision': 2})
+
+          const hr = data_req.ele('DataRequest')
+          hr.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'HeartRate','Unit': '', 'Precision': 2})
+
+          const tv = data_req.ele('DataRequest')
+          tv.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'TidalVolume', 'Unit': 'mL','Precision': 3 })
+
+          const rr = data_req.ele('DataRequest')
+          rr.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'RespirationRate', 'Unit': '1/min', 'Precision': 2 })
+
+          const oxsat = data_req.ele('DataRequest')
+          oxsat.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'OxygenSaturation', 'Unit': 'unitless', 'Precision': 3})
+
+          const ct = data_req.ele('DataRequest')
+          ct.att({'xsi:type': 'PhysiologyDataRequestData', 'Name': 'CoreTemperature', 'Unit': 'degC', 'Precision': 1})
+
+
+
+          for (var item2 in this.action) {
+            const act = xml.ele('Action')
+            if (this.action[item2]['type'] == 'Tension Pneumothorax') {
+              act.att({'xsi:type': 'TensionPneumothoraxData', 'Type': this.action[item2]['openclose'], 'Side': this.action[item2]['side']})
+              const sev = act.ele('Severity')
+              sev.att('value', this.action[item2]['severity']) 
+            }
+            else if (this.action[item2]['type'] == 'Hemorrhage') {
+              act.att('xsi:type', 'HemorrhageData')
+              act.att('Compartment', this.action[item2]['compartment'])
+              const initrate = act.ele('InitialRate')
+              initrate.att('value', this.action[item2]['hemrate'])
+              initrate.att('unit', 'mL/min')
+            }
+            else if (this.action[item2]['type'] == 'Brain Injury') {
+              act.att('xsi:type', 'BrainInjuryData')
+              act.att('Type', this.action[item2]['braininjurytype'])
+              const sev = act.ele('Severity')
+              sev.att('value', this.action[item2]['severity'])
+            }
+            else if (this.action[item2]['type'] == 'Burn Wound') {
+              act.att('xsi:type', 'BurnWoundData')
+              const area = act.ele('TotalBodySurfaceArea')
+              area.att('value', this.action[item2]['burnsurfacearea'])
+            }
+			else if (this.action[item2]['type'] == 'Cardiac Arrest') {
+              act.att('xsi:type', 'CardiacArrestData')
+              act.att('State', 'On')
+            }
+            else {
+            act.att('xsi:type', this.action[item2]['type'].replace(/\s/g, "").concat("Data"))
+            const sev = act.ele('Severity')
+            sev.att('value', this.action[item2]['severity']) 
+            }
+          }
+          const time_act = xml.ele('Action')
+            time_act.att('xsi:type', 'AdvanceTimeData')
+            const time = time_act.ele('Time')
+            time.att('value', this.action_time)
+            time.att('unit', this.action_unit)
+
+          const save_file = xml.ele('Action')
+            save_file.att({'xsi:type': 'SerializeStateData', 'Type': 'Save'})
+            save_file.ele('Filename', './CustomBioGearsState.xml')
+
+          var xmlString = xml.end({
+            pretty: true
+          });
+          const blob = new Blob([xmlString], {
+            type: 'text/xml'
+          })
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = 'CustomScenario.xml'
+          link.click()
+        },
 			saveBiogearsFiles() {
 				this.saveStateXML()
 				this.saveScenarioXML()
