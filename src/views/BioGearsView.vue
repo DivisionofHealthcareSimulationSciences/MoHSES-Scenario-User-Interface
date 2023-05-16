@@ -450,9 +450,9 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
 			patient_vitals: {
 				"BloodTypeABO": 'AB',
 				"BloodTypeRh": 'Positive',
+				"DiastolicArterialPressureBaseline": 73.5,
 				"HeartRateBaseline": 72,
 				"RespirationRateBaseline": 14,
-				"DiastolicArterialPressureBaseline": 73.5,
 				"SystolicArterialPressureBaseline": 114
 			},
 			scenario_props: {
@@ -655,10 +655,9 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
           }
 
           var xmlString = xml.end({
-					pretty: true
+				pretty: true
 				});
-				this.patient = xmlString
-	  
+			this.patient = xmlString
         },
 
         saveScenarioXML() {
