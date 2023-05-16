@@ -659,7 +659,6 @@ cmake -G -DCMAKE_INSTALL_PREFIX=C:~/Downloads/BioGears/external/ .. </pre>
 				});
 			this.patient = xmlString
         },
-
         saveScenarioXML() {
           const xml = xmlbuilder.create('Scenario', {
             encoding: 'UTF-8',
